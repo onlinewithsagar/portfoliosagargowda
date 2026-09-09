@@ -475,7 +475,7 @@ export default function App() {
       {}
       <section id="home" ref={heroRef} style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center' }}>
         <div className={`hero-img-container fade-up ${heroInView ? 'visible' : ''}`} style={{ transitionDuration: '1.5s' }}>
-          <img src="Profilepic.png" alt="Sagar Gowda" className="hero-cinematic-img" 
+          <img src="profilepic.png" alt="Sagar Gowda" className="hero-cinematic-img" 
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2000&auto=format&fit=crop"; }} 
           />
           <div className="hero-img-overlay"></div>
