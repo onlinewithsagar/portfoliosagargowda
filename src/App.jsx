@@ -63,7 +63,14 @@ const BrandLogos = {
   javascript: ({ size = 32 }) => <div style={{ backgroundColor: '#F7DF1E', color: '#000', fontWeight: 900, width: size, height: size, borderRadius: 4, display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', padding: '10%', fontSize: size * 0.45, lineHeight: 1 }}>JS</div>,
   react: ({ size = 32 }) => <svg viewBox="0 0 32 32" width={size} height={size}><circle cx="16" cy="16" r="2.8" fill="#61DAFB" /><g stroke="#61DAFB" strokeWidth="1.5" fill="none"><ellipse cx="16" cy="16" rx="13" ry="5" /><ellipse cx="16" cy="16" rx="13" ry="5" transform="rotate(60 16 16)" /><ellipse cx="16" cy="16" rx="13" ry="5" transform="rotate(120 16 16)" /></g></svg>,
   nodejs: ({ size = 32 }) => <svg viewBox="0 0 32 32" width={size} height={size} fill="#339933"><path d="M16 2l12 6.9v14.2L16 30 4 23.1V8.9L16 2zm0 3.2L6.8 9.5v11.8L16 26.6l9.2-5.3V9.5L16 5.2z"/><path d="M15 11h2v10h-2z" fill="#FFF"/></svg>,
-  aws: ({ size = 32 }) => <svg viewBox="0 0 24 24" width={size} height={size} fill="#FFF"><path d="M11.004 17.533c-3.153 0-6.195-.916-8.625-2.607l-.9.996c2.613 1.944 5.923 2.922 9.387 2.922 3.822 0 7.393-1.34 10.158-3.708l-.89-.982c-2.457 2.1-5.637 3.379-9.13 3.379zm9.05-1.503c.594-1.282 1.096-2.628 1.493-4.004l1.455-.426c-.43 1.507-.988 2.986-1.656 4.417l-1.292.013zm-8.826-6.685l-1.577-4.814h-1.697l-1.579 4.814-1.233-4.814H4.55l2.062 6.78h1.724l1.49-4.343 1.491 4.343h1.723l2.063-6.78h-1.593l-1.233 4.814zm6.059-4.814h-3.655v1.38h2.247v1.272h-2.247v1.442h3.766v1.306h-5.305v-6.78h5.194v1.38z" /></svg>,
+  
+  // Sleek CurrentColor mapped AWS Logo
+  aws: ({ size = 32 }) => (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor">
+      <path d="M13.25 15.65c-2.61.9-5.74 1.42-8.91 1.42-1.54 0-3.04-.1-4.34-.28.18 1.15 1.25 1.95 2.66 1.95 3.32 0 6.64-.6 9.49-1.68l1.1-1.41zM24 15.82c-1.32.99-2.91 1.4-4.52 1.4-.76 0-1.5-.13-2.23-.37l.79-1.28c.61.18 1.25.28 1.89.28 1.07 0 2.05-.28 2.87-.78L24 15.82zm-9.05-1.5c.59-1.28 1.1-2.63 1.49-4l1.46-.43c-.43 1.51-.99 2.99-1.66 4.42l-1.29.01zm-8.83-6.68L4.54 2.83H2.84L1.26 7.64 0 2.83H-1.55l2.06 6.78h1.72l1.49-4.34 1.49 4.34h1.72l2.06-6.78H7.4l-1.23 4.81zm6.06-4.81h-3.66v1.38h2.25v1.27h-2.25v1.44h3.77v1.31h-5.31V2.83h5.19v1.38z" />
+    </svg>
+  ),
+  
   mongodb: ({ size = 32 }) => <svg viewBox="0 0 32 32" width={size} height={size} fill="#47A248"><path d="M16 2s-7 6.5-7 14.5c0 6.2 5 9.7 7 13.5 2-3.8 7-7.3 7-13.5C23 8.5 16 2 16 2zm.3 23.5v-9.2c0-.5.4-.9.9-.9.4 0 .8.3.9.7.2 2 1.3 4.8 1.9 6.2-1.2 1.3-2.5 2.5-3.7 3.2z"/></svg>,
   html: ({ size = 32 }) => <svg viewBox="0 0 32 32" width={size} height={size}><path fill="#E34F26" d="M6 3l2.2 24.3L16 30l7.8-2.7L26 3H6z"/><path fill="#EF652A" d="M16 27.9l6.3-2.2 1.8-20.2H16v22.4z"/><path fill="#ECECEC" d="M16 8.3h-5.4l.4 4.5H16V8.3zm0 7.8h-3.2l-.2-2.5h-2.4l.5 5.8H16v-3.3zm0 7.2l-.1.1-2.8-.8-.2-2h-2.5l.3 3.6 5.3 1.5v-2.4z"/><path fill="#FFFFFF" d="M16 8.3v4.5h5.1l-.4 4.5H16v3.3h3.2l-.3 3.4-2.9.8v2.4l5.3-1.5.7-8h-6z"/></svg>,
   css: ({ size = 32 }) => <svg viewBox="0 0 32 32" width={size} height={size}><path fill="#1572B6" d="M6 3l2.2 24.3L16 30l7.8-2.7L26 3H6z"/><path fill="#33A9DC" d="M16 27.9l6.3-2.2 1.8-20.2H16v22.4z"/><path fill="#ECECEC" d="M16 8.3h-5.4l.4 4.5H16V8.3zm0 7.8h-3.2l-.2-2.5h-2.4l.5 5.8H16v-3.3zm0 7.2l-.1.1-2.8-.8-.2-2h-2.5l.3 3.6 5.3 1.5v-2.4z"/><path fill="#FFFFFF" d="M16 8.3v4.5h5.1l-.4 4.5H16v3.3h3.2l-.3 3.4-2.9.8v2.4l5.3-1.5.7-8h-6z"/></svg>,
@@ -79,7 +86,6 @@ const BrandLogos = {
   openrouter: ({ size = 32 }) => <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="#fff" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
 };
 
-// Helper function to resolve logo for project tags securely
 const getTagLogo = (tagName) => {
   const key = tagName.toLowerCase().replace('.', '').replace(' ', '');
   return BrandLogos[key] || null;
@@ -90,8 +96,8 @@ const RESUME_DATA = {
   name: "SAGAR GOWDA",
   email: "onlinewithsagar@gmail.com",
   socials: {
-    linkedin: "https://linkedin.com",
-    github: "https://github.com"
+    linkedin: "www.linkedin.com/in/onlinewithsagar",
+    github: "https://github.com/onlinewithsagar"
   },
   stats: [
     { number: "10+", label: "Projects Built" },
@@ -172,7 +178,7 @@ const RESUME_DATA = {
       tagline: "A free digital attendance system automating modern institutional workflows.",
       tags: ["React", "Nodejs", "MongoDB"],
       link: "#",
-      size: "medium" 
+      size: "large" 
     },
     {
       title: "HandsFreeStudio",
@@ -193,7 +199,7 @@ const RESUME_DATA = {
       tagline: "Privacy-first local AI assistant with voice recognition & dynamic LLM routing.",
       tags: ["Python", "FastAPI", "Ollama", "SQLite"],
       link: "#",
-      size: "large" // Spans full width for emphasis
+      size: "large"
     },
     {
       title: "AI Code Review Tool",
@@ -226,7 +232,6 @@ const RESUME_DATA = {
   ]
 };
 
-// Advanced Mailto generator
 const createMailto = () => {
   const subject = encodeURIComponent("Project Inquiry / Collaboration Request");
   const body = encodeURIComponent(
@@ -258,12 +263,87 @@ function useInView(options = { threshold: 0.15, triggerOnce: true }) {
   return [ref, inView];
 }
 
+// Highly customized slow, resetting counter
+const AnimatedCounter = ({ value, label }) => {
+  const [ref, inView] = useInView({ threshold: 0.5, triggerOnce: false });
+  const [count, setCount] = useState(0);
+  
+  const isInfinity = value === "∞";
+  const numericTarget = parseInt(value.replace(/\D/g, '')) || 0; 
+  const suffix = value.replace(/\d/g, '');
+
+  useEffect(() => {
+    let animId;
+    if (inView && !isInfinity && numericTarget > 0) {
+      let startTime = null;
+      const duration = 3000; // Slower, dramatic 3-second build
+
+      const updateCount = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const easeProgress = progress === duration ? 1 : 1 - Math.pow(2, -10 * (progress / duration));
+        
+        if (progress < duration) {
+          setCount(Math.floor(easeProgress * numericTarget));
+          animId = requestAnimationFrame(updateCount);
+        } else {
+          setCount(numericTarget);
+        }
+      };
+      animId = requestAnimationFrame(updateCount);
+    } else if (!inView) {
+      // Instantly resets to zero when scrolled away so it triggers perfectly again
+      setCount(0);
+    }
+    
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, [inView, isInfinity, numericTarget]);
+
+  return (
+    <div ref={ref} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <span className="font-outfit text-neon" style={{ fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: 900, lineHeight: 1 }}>
+        {isInfinity ? '∞' : `${count}${suffix}`}
+      </span>
+      <span style={{ fontSize: 12, fontWeight: 700, color: '#888', textTransform: 'uppercase', letterSpacing: 2 }}>{label}</span>
+    </div>
+  );
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('Home');
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
   const [cursorTrailing, setCursorTrailing] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  
+  const [isAppLoading, setIsAppLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loaderVisible, setLoaderVisible] = useState(true);
+
+  useEffect(() => {
+    if (loaderVisible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    let progressTimer;
+    if (isAppLoading) {
+      if (loadingProgress < 100) {
+        progressTimer = setTimeout(() => {
+          const increment = Math.floor(Math.random() * 25) + 15;
+          const next = prev => (prev + increment > 100 ? 100 : prev + increment);
+          setLoadingProgress(next);
+        }, 80);
+      } else {
+        setTimeout(() => setIsAppLoading(false), 300);
+        setTimeout(() => setLoaderVisible(false), 900);
+      }
+    }
+    return () => clearTimeout(progressTimer);
+  }, [loadingProgress, isAppLoading, loaderVisible]);
 
   useEffect(() => {
     let animId;
@@ -296,20 +376,19 @@ export default function App() {
     };
   }, [cursorPos]);
 
-  const [heroRef, heroInView] = useInView();
-  const [quoteRef, quoteInView] = useInView();
-  const [skillsRef, skillsInView] = useInView();
-  const [servicesRef, servicesInView] = useInView();
-  const [experienceRef, experienceInView] = useInView();
-  const [leadershipRef, leadershipInView] = useInView();
-  const [educationRef, educationInView] = useInView();
-  const [projectsRef, projectsInView] = useInView();
-  const [contactRef, contactInView] = useInView();
+  const [heroRef, heroInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [quoteRef, quoteInView] = useInView({ threshold: 0.15, triggerOnce: true });
+  const [skillsRef, skillsInView] = useInView({ threshold: 0.15, triggerOnce: true });
+  const [servicesRef, servicesInView] = useInView({ threshold: 0.15, triggerOnce: true });
+  const [experienceRef, experienceInView] = useInView({ threshold: 0.15, triggerOnce: true });
+  const [leadershipRef, leadershipInView] = useInView({ threshold: 0.15, triggerOnce: true });
+  const [educationRef, educationInView] = useInView({ threshold: 0.15, triggerOnce: true });
+  const [projectsRef, projectsInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [contactRef, contactInView] = useInView({ threshold: 0.15, triggerOnce: true });
 
   return (
     <div style={{ backgroundColor: '#050505', color: '#ffffff', minHeight: '100vh', overflowX: 'hidden' }}>
       
-      {/* GLOBAL CSS INJECTION (No External Files Required) */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;700;800;900&display=swap');
 
@@ -322,114 +401,149 @@ export default function App() {
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', -apple-system, sans-serif; cursor: none; background: var(--bg-dark); }
         
-        /* Custom Site-Themed Scrollbar */
-        ::-webkit-scrollbar {
-          width: 8px;
+        html { 
+          scroll-behavior: smooth; 
         }
-        ::-webkit-scrollbar-track {
-          background: var(--bg-dark);
+        body { 
+          font-family: 'Inter', -apple-system, sans-serif; cursor: none; background: var(--bg-dark); 
         }
-        ::-webkit-scrollbar-thumb {
-          background: #222;
-          border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-          background: var(--neon-yellow);
-        }
+        
+        /* Ultra-Premium Thin Glowing Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020202; border-left: 1px solid rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 20px; transition: background 0.3s; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow); }
 
         .font-outfit { font-family: 'Outfit', sans-serif; }
         .font-script { font-family: 'Caveat', cursive; }
         .text-neon { color: var(--neon-yellow); text-shadow: 0 0 15px rgba(204,255,0,0.25); }
 
         /* Custom Cursor */
-        .cursor-dot {
-          position: fixed; width: 6px; height: 6px; background-color: var(--neon-yellow); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
-        }
-        .cursor-ring {
-          position: fixed; width: 28px; height: 28px; border: 1px solid rgba(204, 255, 0, 0.4); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background-color 0.2s;
-        }
+        .cursor-dot { position: fixed; width: 6px; height: 6px; background-color: var(--neon-yellow); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); }
+        .cursor-ring { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(204, 255, 0, 0.4); border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background-color 0.2s; }
         .cursor-hovered { width: 44px; height: 44px; background-color: rgba(204, 255, 0, 0.1); border-color: var(--neon-yellow); }
 
-        /* Cinematic Hero Gradient for Ultra-Wide Image */
-        .hero-img-container {
-          position: absolute; top: 0; right: 0; width: 70vw; height: 100vh; z-index: 0; overflow: hidden;
-        }
-        .hero-cinematic-img {
-          width: 100%; height: 100%; object-fit: cover; object-position: 70% center; opacity: 0.95;
-        }
+        .hero-img-container { position: absolute; top: 0; right: 0; width: 65vw; height: 100vh; z-index: 0; overflow: hidden; }
+        .hero-cinematic-img { width: 100%; height: 100%; object-fit: cover; object-position: 70% center; opacity: 0.95; filter: contrast(1.1) brightness(0.9); }
         .hero-img-overlay {
           position: absolute; inset: 0;
-          background: linear-gradient(90deg, var(--bg-dark) 0%, rgba(5,5,5,0.95) 20%, rgba(5,5,5,0.2) 65%, transparent 100%),
-                      linear-gradient(0deg, var(--bg-dark) 0%, rgba(5,5,5,0.7) 15%, transparent 40%);
+          background: linear-gradient(90deg, var(--bg-dark) 0%, rgba(5,5,5,0.95) 25%, rgba(5,5,5,0.2) 65%, transparent 100%),
+                      linear-gradient(0deg, var(--bg-dark) 0%, rgba(5,5,5,0.8) 15%, transparent 40%);
         }
 
-        /* Targeted Nav Pill - No full width blur */
-        .nav-pill {
-          background: rgba(15, 15, 15, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-          border: 1px solid var(--border-subtle); border-radius: 40px;
-        }
+        .nav-pill { background: rgba(15, 15, 15, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border-subtle); border-radius: 40px; }
 
-        /* Smooth Interactive Buttons */
         .btn-primary {
-          background-color: var(--neon-yellow); color: #000; padding: 14px 32px; border-radius: 40px; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; text-decoration: none; cursor: none;
+          background-color: var(--neon-yellow); color: #000; padding: 14px 32px; border-radius: 40px; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease; text-decoration: none; cursor: none;
         }
-        .btn-primary:hover { transform: translateY(-2px); background-color: #fff; box-shadow: 0 10px 25px rgba(204, 255, 0, 0.3); }
+        .btn-primary:hover { transform: translateY(-3px) scale(1.02); background-color: #fff; box-shadow: 0 15px 30px rgba(204, 255, 0, 0.25); }
         
-        /* High-End Expertise Rows */
         .expertise-row {
           border-bottom: 1px solid var(--border-subtle);
           padding: 40px 0; display: grid; grid-template-columns: 60px 1fr 2fr 60px;
-          align-items: center; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          align-items: center; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
           cursor: none; position: relative;
         }
         .expertise-row::before {
           content: ''; position: absolute; left: -20px; top: 0; bottom: 0; width: 0;
-          background: rgba(204,255,0,0.03); transition: width 0.4s ease; z-index: -1;
+          background: linear-gradient(90deg, rgba(204,255,0,0.05), transparent); transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: -1;
         }
         .expertise-row:hover { padding-left: 20px; border-bottom-color: var(--neon-yellow); }
         .expertise-row:hover::before { width: calc(100% + 40px); }
         .expertise-row:hover .exp-title { color: var(--neon-yellow); }
-        .expertise-row:hover .exp-icon { transform: scale(1.1) rotate(5deg); color: var(--neon-yellow); }
+        .expertise-row:hover .exp-icon { transform: scale(1.15) rotate(5deg); color: var(--neon-yellow); }
 
-        /* Work Experience Vertical Timeline Flow */
         .timeline-container { position: relative; padding-left: 32px; }
-        .timeline-container::before {
-          content: ''; position: absolute; left: 6px; top: 8px; bottom: 0; width: 1px; background: var(--border-subtle);
-        }
+        .timeline-container::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 0; width: 1px; background: var(--border-subtle); }
         .timeline-item { position: relative; margin-bottom: 56px; }
-        .timeline-node {
-          position: absolute; left: -32px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg-dark); border: 2px solid #444; transition: all 0.4s ease; z-index: 2;
-        }
-        .timeline-item:hover .timeline-node { background: var(--neon-yellow); border-color: var(--neon-yellow); box-shadow: 0 0 15px rgba(204,255,0,0.4); }
-        .timeline-content { transition: transform 0.4s ease; }
-        .timeline-item:hover .timeline-content { transform: translateX(8px); }
+        .timeline-node { position: absolute; left: -32px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg-dark); border: 2px solid #444; transition: all 0.4s ease; z-index: 2; }
+        .timeline-item:hover .timeline-node { background: var(--neon-yellow); border-color: var(--neon-yellow); box-shadow: 0 0 20px rgba(204,255,0,0.5); }
+        .timeline-content { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .timeline-item:hover .timeline-content { transform: translateX(12px); }
 
-        /* Continuous Horizontal Marquee */
-        @keyframes scrollMarquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        /* Pure Text / Ribbon Marquee with Peak Tilt */
+        @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .marquee-container {
+          transform: rotate(-2.5deg) scale(1.05); /* Peak Design Tilt */
+          background: #000;
+          border-top: 1px solid var(--border-subtle);
+          border-bottom: 1px solid var(--border-subtle);
+          padding: 24px 0;
+          overflow: hidden;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+          z-index: 20;
+          position: relative;
         }
-        .marquee-wrapper { overflow: hidden; white-space: nowrap; width: 100%; position: relative; padding: 20px 0; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
-        .marquee-content { display: inline-flex; animation: scrollMarquee 30s linear infinite; gap: 40px; }
+        .marquee-wrapper { 
+          white-space: nowrap; width: 100%; display: flex; 
+          mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); 
+          -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); 
+        }
+        .marquee-content { display: inline-flex; animation: scrollMarquee 25s linear infinite; gap: 60px; align-items: center; }
         .marquee-content:hover { animation-play-state: paused; }
+        .skill-item {
+          display: flex; align-items: center; gap: 16px;
+          font-family: 'Inter', sans-serif;
+          font-size: 22px;
+          font-weight: 600;
+          color: #fff;
+          transition: all 0.3s ease;
+        }
+        .skill-item:hover { color: var(--neon-yellow); }
+        .skill-item:hover .skill-logo-wrapper {
+          transform: scale(1.15) rotate(5deg);
+          filter: drop-shadow(0 0 10px rgba(204,255,0,0.4));
+        }
 
-        /* Project Bento Grid */
+        /* Senior Editorial Leadership Cards */
+        .leadership-card {
+          display: flex; gap: 24px; padding: 40px; 
+          background: #070707; border: 1px solid var(--border-subtle);
+          border-radius: 24px; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .leadership-card:hover {
+          border-color: rgba(204,255,0,0.4); background: #0a0a0a;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+          transform: translateY(-5px);
+        }
+        .leadership-number {
+          font-size: 3rem; font-weight: 900; color: rgba(255,255,255,0.05);
+          line-height: 1; font-family: 'Outfit', sans-serif;
+          transition: color 0.4s ease; margin-top: -4px;
+        }
+        .leadership-card:hover .leadership-number { color: var(--neon-yellow); }
+
+        /* Premium Academics Architecture */
+        .academics-card {
+          background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(255,255,255,0.05);
+          border-radius: 24px; padding: 40px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .academics-card:hover {
+          background: rgba(15, 15, 15, 1); border-color: rgba(204,255,0,0.4);
+          transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+        .academics-card::before {
+          content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+          background: linear-gradient(90deg, transparent, var(--neon-yellow), transparent);
+          opacity: 0; transition: opacity 0.4s ease;
+        }
+        .academics-card:hover::before { opacity: 1; }
+
         .project-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
         .project-card {
-          background: #0a0a0a; border: 1px solid var(--border-subtle); border-radius: 24px; padding: 36px;
-          display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; transition: transform 0.4s ease, border-color 0.4s ease;
+          background: #090909; border: 1px solid var(--border-subtle); border-radius: 28px; padding: 40px;
+          display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.5s ease;
         }
-        .project-card:hover { transform: translateY(-4px); border-color: rgba(204,255,0,0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .project-card:hover { transform: translateY(-6px); border-color: rgba(204,255,0,0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 0 40px rgba(204,255,0,0.02); }
         .project-card::before {
-          content: ''; position: absolute; top: 0; right: 0; width: 150px; height: 150px;
-          background: radial-gradient(circle at top right, rgba(204,255,0,0.08), transparent 70%); pointer-events: none;
+          content: ''; position: absolute; top: 0; right: 0; width: 250px; height: 250px;
+          background: radial-gradient(circle at top right, rgba(204,255,0,0.06), transparent 70%); pointer-events: none;
         }
 
-        /* Animations */
-        .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* Butter Smooth Fade-Up Animations */
+        .fade-up { opacity: 0; transform: translateY(50px); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
         .fade-up.visible { opacity: 1; transform: translateY(0); }
         
         @media (max-width: 1024px) {
@@ -442,6 +556,9 @@ export default function App() {
           .project-grid { display: flex; flex-direction: column; }
           .expertise-row { grid-template-columns: 1fr; gap: 16px; padding: 32px 0; }
           .expertise-row .exp-icon { display: none; }
+          .marquee-container { transform: rotate(-1.5deg) scale(1.05); }
+          .leadership-card { flex-direction: column; gap: 16px; padding: 32px; }
+          .leadership-number { font-size: 2.5rem; }
         }
       `}</style>
 
@@ -449,9 +566,29 @@ export default function App() {
       <div className="cursor-dot" style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }} />
       <div className={`cursor-ring ${isHovered ? 'cursor-hovered' : ''}`} style={{ left: `${cursorTrailing.x}px`, top: `${cursorTrailing.y}px` }} />
 
-      {/* GLOBAL CSS INJECTION (No External Files Required) */}
+      {}
+      {loaderVisible && (
+        <div style={{
+          position: 'fixed', inset: 0, backgroundColor: 'var(--bg-dark)', zIndex: 99990,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          opacity: isAppLoading ? 1 : 0, transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: 'none'
+        }}>
+          <div className="font-outfit" style={{ fontSize: 'clamp(4rem, 8vw, 7rem)', fontWeight: 900, color: '#fff', display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+            {loadingProgress}<span style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: 'var(--neon-yellow)' }}>%</span>
+          </div>
+          <div style={{ width: '240px', height: '2px', backgroundColor: '#222', marginTop: '24px', overflow: 'hidden', borderRadius: '2px' }}>
+            <div style={{ width: `${loadingProgress}%`, height: '100%', backgroundColor: 'var(--neon-yellow)', transition: 'width 0.1s ease-out' }} />
+          </div>
+          <div className="font-outfit" style={{ marginTop: '28px', fontSize: '12px', letterSpacing: '0.4em', color: '#666', textTransform: 'uppercase', fontWeight: 700 }}>
+            {loadingProgress === 100 ? 'System Ready' : 'Initializing Core Protocols'}
+          </div>
+        </div>
+      )}
+
+      {}
       <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 999, padding: '24px 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pointerEvents: 'none' }}>
-        <a href="#home" style={{ textDecoration: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: 6, cursor: 'none', pointerEvents: 'auto' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+        <a href="#home" style={{ textDecoration: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: 8, cursor: 'none', pointerEvents: 'auto' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
           <span className="font-outfit" style={{ fontSize: 24, fontWeight: 900, letterSpacing: 2 }}>SAGAR GOWDA</span>
           <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)', display: 'inline-block', marginBottom: 2 }}></span>
         </a>
@@ -488,7 +625,7 @@ export default function App() {
               <span>BUILD</span><span className="text-neon">/</span><span>CREATE</span><span className="text-neon">/</span><span>SOLVE</span>
             </div>
 
-            <h1 className="font-outfit" style={{ fontSize: 'clamp(3.5rem, 6.5vw, 6.5rem)', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: 28, textShadow: '0 10px 30px rgba(0,0,0,0.8)' }}>
+            <h1 className="font-outfit" style={{ fontSize: 'clamp(3.8rem, 7vw, 7rem)', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: 28, textShadow: '0 10px 30px rgba(0,0,0,0.8)' }}>
               Turning Ideas<br />Into Digital<br /><span className="text-neon">Experiences.</span>
             </h1>
 
@@ -513,62 +650,61 @@ export default function App() {
             </div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 80 }}>
-              <a href={RESUME_DATA.socials.linkedin} target="_blank" rel="noreferrer" style={{ color: '#888', transition: 'color 0.2s', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; }}><LinkedinIcon size={22} /></a>
-              <a href={RESUME_DATA.socials.github} target="_blank" rel="noreferrer" style={{ color: '#888', transition: 'color 0.2s', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; }}><GithubIcon size={22} /></a>
+              <a href={`https://${RESUME_DATA.socials.linkedin.replace(/^(https?:\/\/)?(www\.)?/, '')}`} target="_blank" rel="noreferrer" style={{ color: '#888', transition: 'all 0.3s ease', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; e.currentTarget.style.transform = 'scale(1.1)'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; e.currentTarget.style.transform = 'scale(1)'; }}><LinkedinIcon size={24} /></a>
+              <a href={RESUME_DATA.socials.github} target="_blank" rel="noreferrer" style={{ color: '#888', transition: 'all 0.3s ease', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; e.currentTarget.style.transform = 'scale(1.1)'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; e.currentTarget.style.transform = 'scale(1)'; }}><GithubIcon size={24} /></a>
             </div>
           </div>
         </div>
       </section>
 
       {}
-      <section style={{ borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'rgba(5,5,5,1)', padding: '40px 6vw', position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 32, alignItems: 'center' }}>
+      <section style={{ borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'rgba(5,5,5,1)', padding: '50px 6vw', position: 'relative', zIndex: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 40, alignItems: 'center' }}>
           {RESUME_DATA.stats.map((stat, idx) => (
-            <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <span className="font-outfit text-neon" style={{ fontSize: 'clamp(2rem, 3vw, 2.5rem)', fontWeight: 800 }}>{stat.number}</span>
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#777', textTransform: 'uppercase', letterSpacing: 1.5 }}>{stat.label}</span>
-            </div>
+            <AnimatedCounter key={idx} value={stat.number} label={stat.label} />
           ))}
         </div>
       </section>
 
       {}
-      <section id="quote" ref={quoteRef} className={`fade-up ${quoteInView ? 'visible' : ''}`} style={{ padding: '120px 6vw', display: 'flex', justifyContent: 'center', textAlign: 'center', backgroundColor: '#070707' }}>
+      <section id="quote" ref={quoteRef} className={`fade-up ${quoteInView ? 'visible' : ''}`} style={{ padding: '140px 6vw', display: 'flex', justifyContent: 'center', textAlign: 'center', backgroundColor: '#070707' }}>
         <div style={{ maxWidth: 900 }}>
-          <div className="font-script" style={{ fontSize: 'clamp(3rem, 6vw, 4.5rem)', color: '#fff', transform: 'rotate(-2deg)', lineHeight: 1.2 }}>
+          <div className="font-script" style={{ fontSize: 'clamp(3.5rem, 6.5vw, 5.5rem)', color: '#fff', transform: 'rotate(-2deg)', lineHeight: 1.1 }}>
             "Consistency Creates Freedom."<br/>
             <span style={{ color: 'var(--neon-yellow)' }}>Execution Creates Impact.</span>
           </div>
-          <div style={{ marginTop: 32, fontSize: 11, letterSpacing: 4, color: '#555', textTransform: 'uppercase', fontWeight: 700, fontFamily: 'Inter' }}>— Operating Principle</div>
+          <div style={{ marginTop: 40, fontSize: 12, letterSpacing: 4, color: '#555', textTransform: 'uppercase', fontWeight: 700, fontFamily: 'Inter' }}>— Operating Principle</div>
         </div>
       </section>
 
       {}
-      <section id="skills" ref={skillsRef} className={`fade-up ${skillsInView ? 'visible' : ''}`} style={{ padding: '60px 0 100px', backgroundColor: '#070707' }}>
-        <div style={{ padding: '0 6vw', fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 40, display: 'flex', alignItems: 'center', gap: 8 }}>
-          TECHNOLOGY STACK <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)' }}></span>
-        </div>
-        
-        <div className="marquee-wrapper">
-          <div className="marquee-content">
-            {[...RESUME_DATA.skills, ...RESUME_DATA.skills].map((skill, idx) => {
-              const LogoComp = BrandLogos[skill.key];
-              return (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 16, backgroundColor: '#0c0c0c', border: '1px solid var(--border-subtle)', borderRadius: 40, padding: '12px 24px', transition: 'all 0.3s ease' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.borderColor = 'rgba(204,255,0,0.3)'; e.currentTarget.style.backgroundColor = '#111'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.backgroundColor = '#0c0c0c'; }}>
-                  {LogoComp && <LogoComp size={24} />}
-                  <span style={{ fontSize: 15, fontWeight: 600, color: '#ddd' }}>{skill.name}</span>
-                </div>
-              );
-            })}
+      <section id="skills" ref={skillsRef} className={`fade-up ${skillsInView ? 'visible' : ''}`} style={{ backgroundColor: '#070707', paddingBottom: '120px' }}>
+        <div className="marquee-container">
+          <div className="marquee-wrapper">
+            <div className="marquee-content">
+              {[...RESUME_DATA.skills, ...RESUME_DATA.skills, ...RESUME_DATA.skills].map((skill, idx) => {
+                const LogoComp = BrandLogos[skill.key];
+                return (
+                  <div key={idx} className="skill-item" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                    {LogoComp && (
+                      <span className="skill-logo-wrapper" style={{ color: '#aaa', transition: 'all 0.4s ease', display: 'flex', alignItems: 'center' }}>
+                        <LogoComp size={36} />
+                      </span>
+                    )}
+                    {skill.name}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
 
       {}
       <section id="expertise" ref={servicesRef} className={`fade-up ${servicesInView ? 'visible' : ''}`} style={{ padding: '120px 6vw', backgroundColor: '#050505', borderTop: '1px solid var(--border-subtle)' }}>
-        <div style={{ marginBottom: 60 }}>
+        <div style={{ marginBottom: 80 }}>
           <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 16 }}>DOMAINS OF EXPERTISE</div>
-          <h2 className="font-outfit" style={{ fontSize: 'clamp(2.4rem, 4vw, 3.8rem)', fontWeight: 800 }}>What I <span className="text-neon">Do.</span></h2>
+          <h2 className="font-outfit" style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 800 }}>What I <span className="text-neon">Do.</span></h2>
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -577,9 +713,9 @@ export default function App() {
             return (
               <div key={idx} className="expertise-row" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
                 <div className="font-outfit text-neon" style={{ fontSize: 24, fontWeight: 700, opacity: 0.8 }}>0{idx+1}</div>
-                <h3 className="font-outfit exp-title" style={{ fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: 700, color: '#fff', transition: 'color 0.4s ease' }}>{service.title}</h3>
-                <p style={{ fontSize: 15, color: '#888', lineHeight: 1.7, maxWidth: 600 }}>{service.description}</p>
-                <div className="exp-icon" style={{ color: '#444', textAlign: 'right', transition: 'all 0.4s ease' }}><Icon size={32} /></div>
+                <h3 className="font-outfit exp-title" style={{ fontSize: 'clamp(22px, 3.5vw, 32px)', fontWeight: 700, color: '#fff', transition: 'color 0.4s ease' }}>{service.title}</h3>
+                <p style={{ fontSize: 16, color: '#888', lineHeight: 1.7, maxWidth: 650 }}>{service.description}</p>
+                <div className="exp-icon" style={{ color: '#444', textAlign: 'right', transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)' }}><Icon size={38} /></div>
               </div>
             );
           })}
@@ -591,7 +727,7 @@ export default function App() {
         <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
           PROFESSIONAL JOURNEY <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)' }}></span>
         </div>
-        <h2 className="font-outfit" style={{ fontSize: 'clamp(2.4rem, 4vw, 3.8rem)', fontWeight: 800, marginBottom: 80 }}>
+        <h2 className="font-outfit" style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 800, marginBottom: 80 }}>
           Where I've <span className="text-neon">Worked.</span>
         </h2>
 
@@ -600,15 +736,15 @@ export default function App() {
             <div key={idx} className="timeline-item" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
               <div className="timeline-node"></div>
               <div className="timeline-content">
-                <div style={{ fontSize: 13, color: 'var(--neon-yellow)', fontWeight: 700, letterSpacing: 1, marginBottom: 8 }}>{exp.date}</div>
-                <h3 className="font-outfit" style={{ fontSize: 'clamp(22px, 3vw, 28px)', fontWeight: 800, color: '#fff', marginBottom: 4 }}>{exp.role}</h3>
-                <div style={{ fontSize: 16, color: '#666', fontWeight: 500, marginBottom: 20 }}>{exp.company}</div>
+                <div style={{ fontSize: 14, color: 'var(--neon-yellow)', fontWeight: 700, letterSpacing: 1, marginBottom: 12 }}>{exp.date}</div>
+                <h3 className="font-outfit" style={{ fontSize: 'clamp(24px, 3.5vw, 32px)', fontWeight: 800, color: '#fff', marginBottom: 6 }}>{exp.role}</h3>
+                <div style={{ fontSize: 18, color: '#777', fontWeight: 500, marginBottom: 24 }}>{exp.company}</div>
                 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {exp.workflows.map((flow, i) => (
-                    <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                      <span style={{ color: '#555', marginTop: 2 }}>▹</span>
-                      <span style={{ fontSize: 15, color: '#aaa', lineHeight: 1.6 }}>{flow}</span>
+                    <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <span style={{ color: '#444', marginTop: 2 }}>▹</span>
+                      <span style={{ fontSize: 16, color: '#aaa', lineHeight: 1.6, maxWidth: 800 }}>{flow}</span>
                     </div>
                   ))}
                 </div>
@@ -619,58 +755,67 @@ export default function App() {
       </section>
 
       {}
-      <section id="leadership" ref={leadershipRef} className={`fade-up ${leadershipInView ? 'visible' : ''}`} style={{ padding: '100px 6vw', backgroundColor: '#050505', borderTop: '1px solid var(--border-subtle)' }}>
-        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 40, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <section id="leadership" ref={leadershipRef} className={`fade-up ${leadershipInView ? 'visible' : ''}`} style={{ padding: '120px 6vw', backgroundColor: '#050505', borderTop: '1px solid var(--border-subtle)' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
           BEYOND THE CODE <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)' }}></span>
         </div>
-        <h2 className="font-outfit" style={{ fontSize: 'clamp(2.4rem, 4vw, 3.8rem)', fontWeight: 800, marginBottom: 60 }}>
+        <h2 className="font-outfit" style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 800, marginBottom: 70 }}>
           Leadership & <span className="text-neon">Impact.</span>
         </h2>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: 32 }}>
           {RESUME_DATA.leadership.map((item, idx) => (
-            <div key={idx} style={{ padding: '36px', backgroundColor: '#0a0a0a', border: '1px solid var(--border-subtle)', borderRadius: 20, transition: 'transform 0.4s ease, border-color 0.4s ease' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.borderColor = 'rgba(204,255,0,0.3)'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}>
-              <div style={{ color: 'var(--neon-yellow)', marginBottom: 20 }}><CodeIcon size={28} /></div>
-              <h3 className="font-outfit" style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 12 }}>{item.title}</h3>
-              <p style={{ fontSize: 15, color: '#888', lineHeight: 1.7 }}>{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {}
-      <section id="education" ref={educationRef} className={`fade-up ${educationInView ? 'visible' : ''}`} style={{ padding: '100px 6vw 120px', backgroundColor: '#080808' }}>
-        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 40, display: 'flex', alignItems: 'center', gap: 8 }}>
-          ACADEMIC & CERTIFICATIONS <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)' }}></span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
-          {RESUME_DATA.education.map((edu, idx) => (
-            <div key={idx} style={{ padding: '32px', backgroundColor: '#0c0c0c', border: '1px solid var(--border-subtle)', borderRadius: 20 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-              <div style={{ color: 'var(--neon-yellow)', marginBottom: 20 }}><BookIcon size={28} /></div>
-              <h3 className="font-outfit" style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{edu.degree}</h3>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#777', fontSize: 14, fontWeight: 600, marginBottom: 16 }}>
-                <span>{edu.institution}</span>
-                <span>{edu.date}</span>
+            <div key={idx} className="leadership-card" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+              <div className="leadership-number">0{idx + 1}</div>
+              <div>
+                <div style={{ color: 'var(--neon-yellow)', marginBottom: 20, opacity: 0.8 }}><CodeIcon size={32} /></div>
+                <h3 className="font-outfit" style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 16 }}>{item.title}</h3>
+                <p style={{ fontSize: 16, color: '#888', lineHeight: 1.7 }}>{item.desc}</p>
               </div>
-              <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>{edu.details}</p>
             </div>
           ))}
         </div>
       </section>
 
       {}
-      <section id="projects" ref={projectsRef} className={`fade-up ${projectsInView ? 'visible' : ''}`} style={{ padding: '120px 6vw', backgroundColor: '#050505', borderTop: '1px solid var(--border-subtle)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 60, flexWrap: 'wrap', gap: 24 }}>
+      <section id="education" ref={educationRef} className={`fade-up ${educationInView ? 'visible' : ''}`} style={{ padding: '120px 6vw', backgroundColor: '#080808' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+          ACADEMIC QUALIFICATIONS <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)' }}></span>
+        </div>
+        <h2 className="font-outfit" style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 800, marginBottom: 70, color: '#fff' }}>
+          Education & <span className="text-neon">Certifications.</span>
+        </h2>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: 32 }}>
+          {RESUME_DATA.education.map((edu, idx) => (
+            <div key={idx} className="academics-card" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
+                  <div style={{ color: 'var(--neon-yellow)', opacity: 0.9 }}><BookIcon size={36} /></div>
+                  <div className="font-outfit" style={{ fontSize: 14, fontWeight: 700, color: '#000', backgroundColor: 'var(--neon-yellow)', padding: '6px 14px', borderRadius: 20 }}>{edu.date}</div>
+                </div>
+                <h3 className="font-outfit" style={{ fontSize: 28, fontWeight: 800, color: '#fff', marginBottom: 12 }}>{edu.degree}</h3>
+                <div style={{ color: '#aaa', fontSize: 16, fontWeight: 600, marginBottom: 24 }}>{edu.institution}</div>
+              </div>
+              <p style={{ fontSize: 15, color: '#777', lineHeight: 1.7 }}>{edu.details}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {}
+      <section id="projects" ref={projectsRef} className={`fade-up ${projectsInView ? 'visible' : ''}`} style={{ padding: '140px 6vw', backgroundColor: '#050505', borderTop: '1px solid var(--border-subtle)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 70, flexWrap: 'wrap', gap: 24 }}>
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.25em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
               FEATURED WORK <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)' }}></span>
             </div>
-            <h2 className="font-outfit" style={{ fontSize: 'clamp(2.4rem, 4vw, 4rem)', fontWeight: 800, lineHeight: 1.1 }}>
+            <h2 className="font-outfit" style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 800, lineHeight: 1.1 }}>
               Ideas In <span className="text-neon">Action.</span>
             </h2>
           </div>
-          <a href={RESUME_DATA.socials.github} target="_blank" rel="noreferrer" className="nav-pill" style={{ color: '#fff', textDecoration: 'none', padding: '10px 24px', fontSize: 13, fontWeight: 600, display: 'flex', gap: 8, cursor: 'none' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            View GitHub <GithubIcon size={16} />
+          <a href={RESUME_DATA.socials.github} target="_blank" rel="noreferrer" className="nav-pill" style={{ color: '#fff', textDecoration: 'none', padding: '12px 28px', fontSize: 14, fontWeight: 600, display: 'flex', gap: 10, cursor: 'none' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            View GitHub <GithubIcon size={18} />
           </a>
         </div>
 
@@ -679,20 +824,20 @@ export default function App() {
             return (
               <div key={idx} className="project-card" style={project.size === 'medium' ? { gridColumn: 'span 6' } : { gridColumn: 'span 12' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-                    <div className="font-outfit" style={{ fontSize: project.size === 'medium' ? 26 : 34, fontWeight: 800, color: '#fff' }}>{project.title}</div>
-                    <a href={project.link} style={{ color: 'var(--text-muted)', cursor: 'none', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-yellow)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}><ExternalLinkIcon size={22} /></a>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+                    <div className="font-outfit" style={{ fontSize: project.size === 'medium' ? 28 : 38, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>{project.title}</div>
+                    <a href={project.link} style={{ color: '#666', cursor: 'none', transition: 'color 0.3s, transform 0.3s' }} onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--neon-yellow)'; e.currentTarget.style.transform = 'scale(1.1)'; }} onMouseLeave={(e) => { e.currentTarget.style.color = '#666'; e.currentTarget.style.transform = 'scale(1)'; }}><ExternalLinkIcon size={24} /></a>
                   </div>
-                  <p style={{ fontSize: 15, color: '#888', lineHeight: 1.6, maxWidth: project.size === 'medium' ? '100%' : '60%' }}>{project.tagline}</p>
+                  <p style={{ fontSize: 16, color: '#999', lineHeight: 1.7, maxWidth: project.size === 'medium' ? '100%' : '65%' }}>{project.tagline}</p>
                 </div>
                 
                 {/* Dynamically Injected Project Logos via Tags */}
-                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 40 }}>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 48 }}>
                   {project.tags.map((tag, tIdx) => {
                     const TagLogo = getTagLogo(tag);
                     return (
-                      <span key={tIdx} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', padding: '6px 14px', borderRadius: 20, color: '#bbb', letterSpacing: 0.5 }}>
-                        {TagLogo && <TagLogo size={14} />}
+                      <span key={tIdx} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', padding: '8px 16px', borderRadius: 24, color: '#bbb', letterSpacing: 0.5, transition: 'all 0.3s ease' }} className="project-tag">
+                        {TagLogo && <span style={{ opacity: 0.7 }}><TagLogo size={16} /></span>}
                         {tag}
                       </span>
                     )
@@ -705,38 +850,36 @@ export default function App() {
       </section>
 
       {}
-      <section id="contact" ref={contactRef} className={`fade-up ${contactInView ? 'visible' : ''}`} style={{ padding: '140px 6vw 100px', textAlign: 'center', backgroundColor: '#070707' }}>
-        <h2 className="font-outfit" style={{ fontSize: 'clamp(2.6rem, 5.5vw, 5.2rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: 40 }}>
+      <section id="contact" ref={contactRef} className={`fade-up ${contactInView ? 'visible' : ''}`} style={{ padding: '160px 6vw 120px', textAlign: 'center', backgroundColor: '#070707' }}>
+        <h2 className="font-outfit" style={{ fontSize: 'clamp(3rem, 6vw, 6rem)', fontWeight: 900, lineHeight: 1.05, marginBottom: 48, textShadow: '0 10px 40px rgba(0,0,0,0.8)' }}>
           Have an Idea?<br /><span className="text-neon">Let's Make It Happen.</span>
         </h2>
-        <a href={createMailto()} className="btn-primary" style={{ padding: '18px 44px', fontSize: 16 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-          Start a Conversation <SendIcon size={18} />
+        <a href={createMailto()} className="btn-primary" style={{ padding: '20px 48px', fontSize: 16 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+          Start a Conversation <SendIcon size={20} />
         </a>
       </section>
 
-      {}
-      <footer style={{ borderTop: '1px solid var(--border-subtle)', padding: '40px 6vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 24, backgroundColor: '#050505', position: 'relative', zIndex: 10 }}>
+      <footer style={{ borderTop: '1px solid var(--border-subtle)', padding: '48px 6vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 24, backgroundColor: '#020202', position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <a href="#home" style={{ textDecoration: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: 6, cursor: 'none' }}>
             <span className="font-outfit" style={{ fontSize: 20, fontWeight: 900, letterSpacing: 2 }}>SAGAR GOWDA</span>
             <span style={{ width: 7, height: 7, borderRadius: '50%', backgroundColor: 'var(--neon-yellow)' }}></span>
           </a>
-          <span style={{ color: '#333' }}>|</span><span style={{ fontSize: 13, color: '#777', fontWeight: 500 }}>Developer &nbsp;|&nbsp; Creator</span>
+          <span style={{ color: '#333' }}>|</span><span style={{ fontSize: 14, color: '#777', fontWeight: 500 }}>Developer &nbsp;|&nbsp; Creator</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 24, color: '#888' }}>
-          <a href={RESUME_DATA.socials.linkedin} target="_blank" rel="noreferrer" style={{ color: 'inherit', transition: 'color 0.2s', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; }}><LinkedinIcon size={20} /></a>
-          <a href={RESUME_DATA.socials.github} target="_blank" rel="noreferrer" style={{ color: 'inherit', transition: 'color 0.2s', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; }}><GithubIcon size={20} /></a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28, color: '#888' }}>
+          <a href={`https://${RESUME_DATA.socials.linkedin.replace(/^(https?:\/\/)?(www\.)?/, '')}`} target="_blank" rel="noreferrer" style={{ color: 'inherit', transition: 'color 0.2s', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; }}><LinkedinIcon size={22} /></a>
+          <a href={RESUME_DATA.socials.github} target="_blank" rel="noreferrer" style={{ color: 'inherit', transition: 'color 0.2s', cursor: 'none' }} onMouseEnter={(e) => { setIsHovered(true); e.currentTarget.style.color = '#fff'; }} onMouseLeave={(e) => { setIsHovered(false); e.currentTarget.style.color = '#888'; }}><GithubIcon size={22} /></a>
         </div>
       </footer>
 
-      {}
       {showVideoModal && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(5,5,5,0.9)', backdropFilter: 'blur(12px)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={() => setShowVideoModal(false)}>
-          <div style={{ maxWidth: 580, width: '100%', padding: '40px', backgroundColor: '#111', border: '1px solid var(--border-subtle)', borderRadius: 28, textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ color: 'var(--neon-yellow)', marginBottom: 16, display: 'flex', justifyContent: 'center' }}><PlayIcon size={36} /></div>
-            <h3 className="font-outfit" style={{ fontSize: 28, fontWeight: 800, color: '#fff', marginBottom: 16 }}>About Sagar Gowda</h3>
-            <p style={{ color: '#aaa', fontSize: 15, lineHeight: 1.7, marginBottom: 32 }}>"I build scalable cloud architectures, full-stack applications, and specialized local AI solutions. Driven by robust engineering and solving real-world challenges."</p>
-            <button onClick={() => setShowVideoModal(false)} className="btn-primary" style={{ padding: '12px 32px' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>Close Overview</button>
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(5,5,5,0.95)', backdropFilter: 'blur(16px)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, opacity: showVideoModal ? 1 : 0, transition: 'opacity 0.4s ease' }} onClick={() => setShowVideoModal(false)}>
+          <div style={{ maxWidth: 600, width: '100%', padding: '48px', backgroundColor: '#090909', border: '1px solid rgba(204,255,0,0.2)', borderRadius: 32, textAlign: 'center', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ color: 'var(--neon-yellow)', marginBottom: 20, display: 'flex', justifyContent: 'center' }}><PlayIcon size={42} /></div>
+            <h3 className="font-outfit" style={{ fontSize: 32, fontWeight: 800, color: '#fff', marginBottom: 20 }}>About Sagar Gowda</h3>
+            <p style={{ color: '#aaa', fontSize: 16, lineHeight: 1.7, marginBottom: 40 }}>"I build scalable cloud architectures, full-stack applications, and specialized local AI solutions. Driven by robust engineering and solving real-world challenges."</p>
+            <button onClick={() => setShowVideoModal(false)} className="btn-primary" style={{ padding: '14px 40px', fontSize: 15 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>Close Overview</button>
           </div>
         </div>
       )}
