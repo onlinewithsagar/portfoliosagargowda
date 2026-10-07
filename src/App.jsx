@@ -77,8 +77,9 @@ function useInView(t = 0.15, once = false) {
   const [on, setOn] = useState(false);
   useEffect(() => {
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setOn(true); if (once) io.disconnect(); } else if (!once) setOn(false);
-    }, { threshold: t, rootMargin: "0px 0px -6% 0px" });
+      if (e.isIntersecting && (once || e.intersectionRatio >= t)) { setOn(true); if (once) io.disconnect(); }
+      else if (!once && e.intersectionRatio === 0) setOn(false);
+    }, { threshold: [0, t], rootMargin: "0px 0px -6% 0px" });
     io.observe(ref.current);
     return () => io.disconnect();
   }, [t, once]);
@@ -89,11 +90,13 @@ function Reveal({ children, delay = 0, className = "", once = false, ...r }) {
   return <div ref={ref} className={`rv ${on ? "in" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` }} {...r}>{children}</div>;
 }
 function Split({ text, className = "", delay = 0, as: Tag = "h2" }) {
-  const [ref, on] = useInView(0.3, true);
+  const [ref, on] = useInView(0.3);
+  const ws = text.split(" ");
+  const step = Math.min(70, 900 / ws.length);
   return (
     <Tag ref={ref} className={`sp ${on ? "in" : ""} ${className}`} aria-label={text}>
-      {text.split(" ").map((w, i) => (
-        <span className="w" key={i} aria-hidden="true"><span style={{ transitionDelay: `${delay + i * 70}ms` }}>{w}</span>&nbsp;</span>
+      {ws.map((w, i) => (
+        <span className="w" key={i} aria-hidden="true"><span style={{ transitionDelay: `${delay + i * step}ms` }}>{w}</span>&nbsp;</span>
       ))}
     </Tag>
   );
@@ -121,7 +124,7 @@ function Sec({ id, idx, label, tone = "dark", bg = null, children, className = "
     <section id={id} ref={outer} className={`sec ${tone} ${className}`} aria-label={label}>
       <div className="gl" />{bg}
       <div className="wrap" ref={inner}>
-        <Reveal once className="sechead"><b>{String(idx).padStart(2, "0")}</b><i />{label}</Reveal>
+        <Reveal className="sechead"><b>{String(idx).padStart(2, "0")}</b><i />{label}</Reveal>
         {children}
       </div>
     </section>
@@ -220,11 +223,15 @@ function CursorGlow() {
   const ref = useRef(null);
   useEffect(() => {
     if (!matchMedia("(hover: hover) and (pointer: fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y, raf;
-    const mv = (e) => { x = e.clientX; y = e.clientY; };
-    const loop = () => { cx += (x - cx) * 0.07; cy += (y - cy) * 0.07; ref.current.style.transform = `translate3d(${cx - 250}px,${cy - 250}px,0)`; raf = requestAnimationFrame(loop); };
+    let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y, raf = 0;
+    const paint = () => { ref.current.style.transform = `translate3d(${cx - 250}px,${cy - 250}px,0)`; };
+    const loop = () => {
+      cx += (x - cx) * 0.07; cy += (y - cy) * 0.07; paint();
+      raf = Math.abs(x - cx) > 0.5 || Math.abs(y - cy) > 0.5 ? requestAnimationFrame(loop) : 0;
+    };
+    const mv = (e) => { x = e.clientX; y = e.clientY; if (!raf) raf = requestAnimationFrame(loop); };
+    paint();
     addEventListener("mousemove", mv, { passive: true });
-    raf = requestAnimationFrame(loop);
     return () => { removeEventListener("mousemove", mv); cancelAnimationFrame(raf); };
   }, []);
   return <div ref={ref} className="cglow" aria-hidden="true" />;
@@ -268,7 +275,7 @@ function Nav({ active, solid }) {
 }
 
 /* ================= SECTIONS ================= */
-const PTS = [[100, 450], [340, 372], [580, 285], [820, 175], [1060, 62]];
+const PTS = [[120, 452], [360, 372], [600, 285], [840, 175], [1080, 62]];
 const curve = (pts) => {
   const p = [[0, 492], ...pts];
   let d = `M${p[0][0]},${p[0][1]}`;
@@ -279,7 +286,7 @@ const curve = (pts) => {
   return d;
 };
 const CLIMB = curve(PTS);
-const PEAKS = [[340, 340], [580, 260], [820, 150], [1060, 36]];
+const PEAKS = [[360, 340], [600, 260], [840, 150], [1080, 36]];
 const PINES = Array.from({ length: 22 }, (_, i) => [i * 56 + ((i * 37) % 30), 478 + ((i * 13) % 22)]);
 const STARS = [[80, 60], [220, 30], [330, 90], [520, 40], [640, 110], [900, 30], [1120, 130], [1170, 60], [40, 160], [760, 60]];
 
@@ -364,78 +371,45 @@ function useFit(oRef, iRef) {
 
 /* ---- Climb so far: self-playing story, no hover ---- */
 function Peak() {
-  const [ref, on] = useInView(0.35);
-  const [sel, setSel] = useState(-1);
-  const [tgt, setTgt] = useState(0);
-  const pathRef = useRef(null), runRef = useRef(null), ctl = useRef(null);
-  useEffect(() => {
-    const path = pathRef.current, L = path.getTotalLength();
-    const lens = PTS.map(([x, y]) => { let best = 0, bd = 1e12; for (let i = 0; i <= 400; i++) { const q = path.getPointAtLength((L * i) / 400); const d = (q.x - x) ** 2 + (q.y - y) ** 2; if (d < bd) { bd = d; best = i / 400; } } return best; });
-    let from = 0, raf = 0, timer = 0, token = 0, alive = true;
-    const draw = (f) => { const q = path.getPointAtLength(L * f); runRef.current.style.left = `${q.x / 12}%`; runRef.current.style.top = `${q.y / 5.2}%`; path.style.strokeDashoffset = String(1 - f); };
-    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-    const visit = (i, tk) => {
-      if (!alive || tk !== token) return;
-      setTgt(i);
-      const to = lens[i], f0 = from, t0 = performance.now(), dur = f0 === 0 ? 1200 : 2400;
-      const tick = (t) => {
-        if (!alive || tk !== token) return;
-        const k = Math.min(1, (t - t0) / dur);
-        from = f0 + (to - f0) * ease(k); draw(from);
-        if (k < 1) { raf = requestAnimationFrame(tick); return; }
-        setSel(i);
-        timer = setTimeout(() => {
-          if (i + 1 < PTS.length) visit(i + 1, tk);
-          else timer = setTimeout(() => { if (tk !== token) return; from = 0; draw(0); setSel(-1); visit(0, tk); }, 3200);
-        }, 3600);
-      };
-      raf = requestAnimationFrame(tick);
-    };
-    const stop = () => { token++; clearTimeout(timer); cancelAnimationFrame(raf); };
-    ctl.current = { stop, begin: (i) => { stop(); if (i === 0) { from = 0; draw(0); setSel(-1); } visit(i, token); } };
-    draw(0);
-    return () => { alive = false; stop(); };
-  }, []);
-  useEffect(() => { if (on) ctl.current.begin(0); else ctl.current.stop(); }, [on]);
-  const cur = Math.max(sel, 0), m = MILES[cur];
-  const [tx, ty] = PTS[tgt];
   return (
-    <div ref={ref} className={`peak ${on ? "on" : ""}`}>
+    <div className="peak on">
       <div className="pscene">
-        <div className="pcam" style={{ transformOrigin: `${tx / 12}% ${ty / 5.2}%` }}>
-          <svg viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="pk1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F04B19" /><stop offset=".55" stopColor="#5a2314" /><stop offset="1" stopColor="#1d1512" /></linearGradient>
-              <linearGradient id="pk2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2c211d" /><stop offset="1" stopColor="#110d0b" /></linearGradient>
-              <linearGradient id="pkT" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#F5F1E9" /><stop offset="1" stopColor="#FF7A45" /></linearGradient>
-              <radialGradient id="pkS"><stop offset="0" stopColor="#FF7A45" stopOpacity=".9" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></radialGradient>
-              <filter id="pkB"><feGaussianBlur stdDeviation="12" /></filter>
-            </defs>
-            <circle className="sunc" cx="1060" cy="70" r="230" fill="url(#pkS)" />
-            {STARS.map(([x, y], i) => <circle key={i} className="star" cx={x} cy={y} r="1.8" style={{ animationDelay: `${i * 0.4}s` }} />)}
-            <path className="far" d="M0,520 L0,360 L170,310 L360,380 L540,290 L740,360 L930,250 L1200,330 L1200,520Z" />
-            <ellipse className="mist" cx="260" cy="400" rx="280" ry="30" />
-            <path className="r1" d="M0,520 L0,420 L120,380 L230,430 L340,340 L460,400 L580,260 L700,330 L820,150 L940,240 L1060,36 L1200,190 L1200,520Z" fill="url(#pk1)" />
-            {PEAKS.map(([x, y], i) => <path key={i} className="snow" d={`M${x - 34},${y + 30} L${x - 12},${y + 18} L${x},${y + 32} L${x + 14},${y + 18} L${x + 34},${y + 30} L${x},${y}Z`} />)}
-            <ellipse className="mist m2" cx="900" cy="330" rx="300" ry="26" />
-            <path className="r2" d="M0,520 L0,490 L150,450 L290,492 L440,440 L600,486 L760,400 L900,462 L1040,380 L1200,440 L1200,520Z" fill="url(#pk2)" />
-            {PINES.map(([x, y], i) => <path key={i} className="pine" d={`M${x},${y} l-10,26 h20z M${x},${y + 12} l-13,26 h26z`} />)}
-            <path ref={pathRef} className="climb" pathLength="1" d={CLIMB} />
-            {[[120, 110, 0], [420, 70, 7]].map(([x, y, dl], i) => <path key={i} className="bird" style={{ animationDelay: `${dl}s` }} d={`M${x},${y} q7,-9 14,0 q7,-9 14,0`} />)}
-          </svg>
-          {PTS.map(([x, y], i) => (
-            <span key={i} className={`pn2 ${i <= sel ? "lit" : ""} ${i === sel ? "cur" : ""}`} style={{ left: `${x / 12}%`, top: `${y / 5.2}%` }}>
-              <Ic n={MILES[i][1]} s={16} />{i === sel && <span className={`plab ${i === 0 ? "up" : ""}`}>{MILES[i][0]}</span>}
-            </span>
-          ))}
-          <span ref={runRef} className="runner2" />
-          <svg className="pflag" viewBox="0 0 40 50" aria-hidden="true"><path d="M6 4v44" stroke="#fff" strokeWidth="3" strokeLinecap="round" /><path className="wave" d="M8 6H36L29 14L36 22H8Z" fill="#F04B19" /></svg>
-        </div>
+        <svg viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="pk1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F04B19" /><stop offset=".55" stopColor="#5a2314" /><stop offset="1" stopColor="#1d1512" /></linearGradient>
+            <linearGradient id="pk2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2c211d" /><stop offset="1" stopColor="#110d0b" /></linearGradient>
+            <linearGradient id="pkT" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#F5F1E9" /><stop offset="1" stopColor="#FF7A45" /></linearGradient>
+            <linearGradient id="pkA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FF7A45" stopOpacity="0" /><stop offset="1" stopColor="#FF7A45" stopOpacity=".28" /></linearGradient>
+            <radialGradient id="pkS"><stop offset="0" stopColor="#FF7A45" stopOpacity=".9" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></radialGradient>
+            <filter id="pkB"><feGaussianBlur stdDeviation="12" /></filter>
+          </defs>
+          <rect width="1200" height="330" fill="url(#pkA)" />
+          <circle className="sunc" cx="1080" cy="70" r="230" fill="url(#pkS)" />
+          {STARS.map(([x, y], i) => <circle key={i} className="star" cx={x} cy={y} r="1.8" />)}
+          <path className="far" d="M0,520 L0,360 L170,310 L380,380 L560,290 L760,360 L950,250 L1200,330 L1200,520Z" />
+          <ellipse className="mist" cx="260" cy="400" rx="280" ry="30" />
+          <path className="r1" d="M0,520 L0,420 L120,380 L240,430 L360,340 L480,400 L600,260 L720,330 L840,150 L960,240 L1080,36 L1200,190 L1200,520Z" fill="url(#pk1)" />
+          {PEAKS.map(([x, y], i) => <path key={i} className="snow" d={`M${x - 34},${y + 30} L${x - 12},${y + 18} L${x},${y + 32} L${x + 14},${y + 18} L${x + 34},${y + 30} L${x},${y}Z`} />)}
+          <ellipse className="mist" cx="900" cy="330" rx="300" ry="26" />
+          <path className="r2" d="M0,520 L0,490 L150,450 L290,492 L440,440 L600,486 L760,400 L900,462 L1040,380 L1200,440 L1200,520Z" fill="url(#pk2)" />
+          {PINES.map(([x, y], i) => <path key={i} className="pine" d={`M${x},${y} l-10,26 h20z M${x},${y + 12} l-13,26 h26z`} />)}
+          <path d="M188,478 l22,-34 l22,34z" fill="#F5F1E9" opacity=".92" /><path d="M204,478 l6,-14 l6,14z" fill="#3a2a24" />
+          <path className="climb" pathLength="1" d={CLIMB} />
+        </svg>
+        {PTS.map(([x, y], i) => (
+          <span key={i} className="pn2 lit" style={{ left: `${x / 12}%`, top: `${y / 5.2}%` }}>
+            <Ic n={MILES[i][1]} s={16} /><span className={`plab ${i === 0 ? "up" : ""}`}>{MILES[i][0]}</span>
+          </span>
+        ))}
+        <svg className="pflag" viewBox="0 0 40 50" aria-hidden="true"><path d="M6 4v44" stroke="#fff" strokeWidth="3" strokeLinecap="round" /><path d="M8 6H36L29 14L36 22H8Z" fill="#F04B19" /></svg>
       </div>
-      <div className="pchips">{MILES.map((x, i) => <button key={x[0]} className={i === cur && sel >= 0 ? "on" : ""} onClick={() => ctl.current.begin(i)}>{x[0]}</button>)}</div>
-      <div className="ppanel" key={cur}>
-        <div><small>0{cur + 1} · {m[0]}</small><h3>{m[2]}</h3></div>
-        <ul>{m[3].map((b) => <li key={b}>{b}</li>)}</ul>
+      <div className="pcols">
+        {MILES.map(([t, ic, sub, bullets], i) => (
+          <Reveal key={t} delay={i * 80} className="pcol">
+            <small>0{i + 1} · {t}</small><h3>{sub}</h3>
+            <ul>{bullets.map((b) => <li key={b}>{b}</li>)}</ul>
+          </Reveal>
+        ))}
       </div>
     </div>
   );
@@ -445,14 +419,13 @@ function Peak() {
 function Identity() {
   const [ref, on] = useInView(0.3);
   const [a, setA] = useState(0);
-  useEffect(() => { if (!on) return; const t = setInterval(() => setA((x) => (x + 1) % IDS.length), 3000); return () => clearInterval(t); }, [on]);
   return (
     <div ref={ref} className={`ident ${on ? "on" : ""}`}>
       <div className="isun" data-par="0.05" />
       <ul>
         {IDS.map(([t], i) => (
           <li key={t} className={a === i ? "on" : ""}>
-            <button onClick={() => setA(i)}><span className="idn">0{i + 1}</span><span>{t.replace("The ", "")}</span></button>
+            <button onMouseEnter={() => setA(i)} onFocus={() => setA(i)} onClick={() => setA(i)}><span className="idn">0{i + 1}</span><span>{t.replace("The ", "")}</span></button>
           </li>
         ))}
       </ul>
@@ -511,27 +484,39 @@ function Career({ day }) {
 /* ---- Education: cinematic scene ---- */
 function EduScene() {
   const [ref, on] = useInView(0.3);
+  const pts = [[150, 60], [165, 40], [190, 32], [215, 38], [232, 55], [232, 78], [215, 98], [200, 112], [200, 132]];
+  const stars = [[40, 40], [84, 22], [300, 36], [350, 64], [372, 24], [60, 96], [330, 120], [26, 150], [280, 86], [120, 28], [250, 18], [380, 110]];
   return (
     <div ref={ref} className={`edus ${on ? "on" : ""}`}>
-      <div className="erays" />
       <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <defs><radialGradient id="eg"><stop offset="0" stopColor="#FF7A45" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></radialGradient></defs>
-        <circle className="esun" cx="200" cy="190" r="140" fill="url(#eg)" />
+        <defs>
+          <radialGradient id="eg"><stop offset="0" stopColor="#FF7A45" stopOpacity=".5" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></radialGradient>
+          <linearGradient id="ebm" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#FF7A45" stopOpacity=".4" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></linearGradient>
+        </defs>
+        <circle className="esun" cx="205" cy="92" r="120" fill="url(#eg)" />
+        {stars.map(([x, y], i) => <circle key={i} className="estar" cx={x} cy={y} r="1.5" style={{ animationDelay: `${i * 0.5}s` }} />)}
+        <path className="ebeam" d="M114,170 L190,106 L212,128 L122,184Z" fill="url(#ebm)" />
+        <path className="econ" pathLength="1" d={"M" + pts.map((q) => q.join(",")).join(" L")} />
+        {pts.map(([x, y], i) => <circle key={i} className="enode" cx={x} cy={y} r="4" style={{ transitionDelay: `${0.4 + i * 0.18}s` }} />)}
+        <circle className="enode big" cx="200" cy="160" r="6" style={{ transitionDelay: "2.2s" }} />
         <path className="eh1" d="M0,300 L0,214 Q100,176 200,208 T400,192 L400,300Z" fill="#3a1d12" />
         <path className="eh2" d="M0,300 L0,250 Q120,220 220,244 T400,232 L400,300Z" fill="#130f0d" />
-        <path className="eln" d="M110,98 C70,110 66,150 68,180" /><path className="eln" d="M290,98 C330,110 334,150 332,180" />
-        <g className="ecap"><path d="M146,116 V146 Q200,176 254,146 V116 L200,138Z" fill="#cdbfb0" /><path d="M200,64 L290,98 L200,132 L110,98Z" fill="#F5F1E9" /><path d="M290,98 V142" stroke="#FF7A45" strokeWidth="3" /><circle cx="290" cy="146" r="5" fill="#FF7A45" /></g>
+        <g className="etel">
+          <path d="M82,198 L64,232 M82,198 L100,232 M82,198 L82,238" stroke="#cdbfb0" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <g transform="rotate(-35 82 196)"><rect x="52" y="192" width="10" height="8" rx="2" fill="#8c7f73" /><rect x="58" y="190" width="66" height="12" rx="3" fill="#cdbfb0" /><rect x="110" y="188" width="10" height="16" rx="2" fill="#FF7A45" /></g>
+          <circle cx="82" cy="196" r="5" fill="#FF7A45" />
+        </g>
       </svg>
-      <span className="echip" style={{ left: "17%", top: "64%" }}><Ic n="shield" s={15} />Cyber Security</span>
-      <span className="echip" style={{ left: "83%", top: "64%" }}><Ic n="cloud" s={15} />Cloud Architecture</span>
-      <div className="ecap2">Systems built · secured · deployed · managed</div>
+      <span className="echip" style={{ left: "80%", top: "58%" }}>Cyber Security</span>
+      <span className="echip" style={{ left: "80%", top: "71%" }}>Cloud Architecture</span>
+      <div className="ecap2">How is it built? How is it secured? How does it run?</div>
     </div>
   );
 }
 
 /* ---- Projects: scroll-driven story ---- */
 function ProjScene({ i }) {
-  const sx = [70, 30, 55, 80, 45, 62][i];
+  const sx = [70, 30, 55, 80, 45, 62][i] ?? 50;
   return (
     <div className="pscn" style={{ "--sx": `${sx}%` }}>
       <div className="psun" />
@@ -539,74 +524,41 @@ function ProjScene({ i }) {
         <path d="M0,120 L0,70 L60,40 L110,75 L170,25 L230,70 L290,35 L350,72 L400,50 L400,120Z" fill="#0d0b0a" /><path d="M0,120 L0,95 L90,70 L160,98 L240,66 L320,98 L400,80 L400,120Z" fill="#060504" />
       </svg>
       <div className="pem">{Array.from({ length: 12 }, (_, k) => <i key={k} style={{ left: `${(k * 83 + i * 17) % 100}%`, animationDelay: `${(k * 0.6) % 6}s` }} />)}</div>
-      <div className="pa2" key={i}><ProjArt i={i} /></div>
-      <b className="pbig">0{i + 1}</b>
+      {i >= 0 && <div className="pa2" key={i}><ProjArt i={i} /></div>}
+      {i >= 0 && <b className="pbig">0{i + 1}</b>}
     </div>
   );
 }
-function ProjectsStory() {
-  const outer = useRef(null), stick = useRef(null), wrap = useRef(null);
-  const [act, setAct] = useState(0);
-  const [pin, setPin] = useState(true);
-  const [mob, setMob] = useState(0);
-  useFit(stick, wrap);
-  useEffect(() => {
-    const mq = matchMedia("(min-width: 1001px)");
-    const f = () => {
-      setPin(mq.matches);
-      if (!mq.matches) return;
-      const r = outer.current.getBoundingClientRect();
-      const p = Math.min(0.999, Math.max(0, -r.top / Math.max(1, r.height - innerHeight)));
-      setAct(Math.floor(p * PROJECTS.length));
-    };
-    f(); addEventListener("scroll", f, { passive: true }); addEventListener("resize", f);
-    return () => { removeEventListener("scroll", f); removeEventListener("resize", f); };
-  }, []);
-  const cur = pin ? act : mob, pi = cur < 0 ? 0 : cur, P = PROJECTS[pi];
-  const jump = (i) => {
-    if (!pin) return setMob(mob === i ? -1 : i);
-    const r = outer.current.getBoundingClientRect(), tot = r.height - innerHeight;
-    const y = scrollY + r.top + tot * ((i + 0.5) / PROJECTS.length);
-    window.__goto ? window.__goto(y) : scrollTo({ top: y, behavior: "smooth" });
-  };
+function Projects() {
+  const [hov, setHov] = useState(-1);
+  const [sel, setSel] = useState(-1);
+  const cur = hov >= 0 ? hov : sel;
+  const P = cur >= 0 ? PROJECTS[cur] : null;
+  const url = P && P[6] && LINKS[P[6]];
   return (
-    <section id="work" ref={outer} className={`pstory dark ${pin ? "pin" : ""}`} aria-label="Projects">
-      <div className="pstick" ref={stick}>
-        <div className="gl" />
-        <div className="wrap" ref={wrap}>
-          <Reveal once className="sechead"><b>06</b><i />Projects<span className="pcount">0{pi + 1} / 0{PROJECTS.length}</span></Reveal>
-          <div className="phd">
-            <Split text="Ideas deserve to exist." className="disp sm" />
-            <Reveal delay={80}><p className="lead">Every project starts with a question: what if something could be simpler, smarter or more useful? Concepts are marked as concepts.</p></Reveal>
+    <div className="pwrap" onMouseLeave={() => setHov(-1)}>
+      <div className="plist">
+        {PROJECTS.map(([name, , status], i) => (
+          <div key={name} className={`prow ${cur === i ? "on" : ""}`}>
+            <button className="phead" aria-pressed={sel === i} onClick={() => setSel(sel === i ? -1 : i)}
+              onMouseEnter={() => matchMedia("(hover: hover)").matches && setHov(i)} onFocus={() => setHov(i)}
+              onBlur={(e) => { if (!e.currentTarget.closest(".pwrap").contains(e.relatedTarget)) setHov(-1); }}>
+              <span className="pn">{String(i + 1).padStart(2, "0")}</span><span className="pt">{name}</span><span className="pill">{status}</span><span className="pplus"><Ic n="plus" s={20} /></span>
+            </button>
           </div>
-          <div className="pwrap">
-            <div className="plist">
-              {PROJECTS.map(([name, tags, status, ic, desc, focus, key], i) => {
-                const url = key && LINKS[key], on = cur === i;
-                return (
-                  <div key={name} className={`prow ${on ? "on" : ""}`}>
-                    <button className="phead" aria-expanded={on} aria-controls={`p${i}`} onClick={() => jump(i)}>
-                      <span className="pn">{String(i + 1).padStart(2, "0")}</span><span className="pt">{name}</span><span className="pill">{status}</span><span className="pplus"><Ic n="plus" s={20} /></span>
-                    </button>
-                    <div className="pbody" id={`p${i}`}>
-                      <div><div className="pin2">
-                        <div className="t"><p>{desc}</p><p className="focus2"><b>Focus</b>{focus}</p></div>
-                        {url && <Btn variant="pri sm" href={url} icon="arrow">Visit {name}</Btn>}
-                      </div></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <aside className="pprev" aria-hidden="true">
-              <ProjScene i={pi} />
-              <small>{P[2]} · {P[1]}</small><h3>{P[0]}</h3>
-            </aside>
-          </div>
-          <Reveal className="quote q2">“An idea becomes valuable when you give it the effort to exist.”</Reveal>
-        </div>
+        ))}
       </div>
-    </section>
+      <aside className="pprev">
+        <ProjScene i={cur} />
+        <div className="pinfo">
+          {P ? (
+            <><small>{P[2]} · {P[1]}</small><h3>{P[0]}</h3><p>{P[4]}</p><p className="focus2"><b>Focus</b>{P[5]}</p>{url && <Btn variant="pri sm" href={url} icon="arrow">Visit {P[0]}</Btn>}</>
+          ) : (
+            <><small>6 projects</small><h3>Select a project</h3><p>Hover or tap a project to see what it is about.</p></>
+          )}
+        </div>
+      </aside>
+    </div>
   );
 }
 
@@ -647,6 +599,16 @@ function LearnArt({ i }) {
   if (i === 1) return (<svg {...v}><g className="lp"><path d="M50 30a20 20 0 0 1-34 14M10 30a20 20 0 0 1 34-14M44 8v10H34M16 52V42h10" /></g></svg>);
   if (i === 2) return (<svg {...v}><g className="ct"><rect x="6" y="22" width="30" height="18" /><path d="M14 22v18M22 22v18M30 22v18" /></g><path d="M4 46H56" opacity=".5" /></svg>);
   return (<svg {...v}><path className="sp" d="M30 8l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" /></svg>);
+}
+
+function HeroName({ go }) {
+  const [ref, on] = useInView(0.3);
+  return (
+    <h1 ref={ref} className={`hn ${on && go ? "in" : ""}`} aria-label="Sagar Gowda">
+      <span className="hl" aria-hidden="true"><span>SAGAR</span></span>
+      <span className="hl" aria-hidden="true"><span style={{ transitionDelay: ".14s" }}>GOWDA<i /></span></span>
+    </h1>
+  );
 }
 
 function Finale({ lit, day }) {
@@ -703,6 +665,10 @@ export default function App() {
   const day = Math.max(1, Math.floor((Date.now() - DAY_ONE) / 864e5) + 1);
   useSmoothScroll();
   useParallax();
+  const [resume, setResume] = useState(false);
+  useEffect(() => {
+    fetch(LINKS.resume, { method: "HEAD" }).then((r) => { if (r.ok && /pdf/i.test(r.headers.get("content-type") || "")) setResume(true); }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     document.title = "Sagar Gowda — Analyst Trainee @ Cognizant | Developer · Cloud & DevOps";
@@ -743,13 +709,13 @@ export default function App() {
           <div className="tags a1"><b>01</b><span>Developer</span><em>×</em><span>Builder</span><em>×</em><span>Learner</span></div>
           <div className="hcopy">
             <small className="a2">©2026</small>
-            <h1 className="a3"><span>SAGAR</span><span>GOWDA<i /></span></h1>
+            <HeroName go={ready} />
             <p className="role a4">Analyst Trainee @ Cognizant</p>
             <p className="sub a4">Developer &nbsp;|&nbsp; Cloud &amp; DevOps Enthusiast &nbsp;|&nbsp; Digital Builder</p>
             <div className="ctas a5">
               <Btn href="#work" onClick={go("work")} icon="arrow">View My Work</Btn>
               <Btn variant="glass" href="#journey" onClick={go("journey")} icon="down">Explore My Journey</Btn>
-              <Btn variant="glass" href={LINKS.resume} icon="download" download>Resume</Btn>
+              {resume && <Btn variant="glass" href={LINKS.resume} icon="download" download>Resume</Btn>}
             </div>
           </div>
           <a className="gcard c1 a5" href="#journey" onClick={go("journey")}>
@@ -764,7 +730,7 @@ export default function App() {
               <a href={LINKS.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Ic n="github" /></a>
               <a href={LINKS.email} aria-label="Email"><Ic n="mail" /></a>
             </div>
-            <span>Building today. Engineering tomorrow.</span>
+            <span>“Every meaningful journey begins with the decision to start.”</span>
           </div>
         </section>
         <div className="marq" aria-hidden="true"><div>{[0, 1].map((k) => <span key={k}>DEVELOPER ✦ BUILDER ✦ LEARNER ✦ DEVELOPER ✦ BUILDER ✦ LEARNER ✦ </span>)}</div></div>
@@ -781,7 +747,7 @@ export default function App() {
             </div>
             <Identity />
           </div>
-          <Reveal className="quote">“Stay curious. Stay humble. Keep building.”</Reveal>
+          <Split as="div" className="quote" text="“Stay curious. Stay humble. Keep building.”" />
         </Sec>
 
         {/* 03 JOURNEY */}
@@ -789,14 +755,14 @@ export default function App() {
           <Reveal><span className="chip-l"><Ic n="spark" s={14} />Current position</span></Reveal>
           <Split text="Where it all started." className="disp sm" />
           <Career day={day} />
-          <Reveal className="quote">“Every meaningful journey begins with the decision to start.”</Reveal>
+          <Split as="div" className="quote" text="“Someday is not a date. Today is an opportunity.”" />
         </Sec>
 
         {/* 04 PROFESSIONAL OVERVIEW — the peak */}
         <Sec id="ascent" idx={4} label="Professional Overview" tone="dark">
           <Split text="The climb so far." className="disp sm" />
           <Peak />
-          <Reveal className="quote q2">“The destination is a dream. The beginning is a decision.”</Reveal>
+          <Split as="div" className="quote q2" text="“The destination is a dream. The beginning is a decision.”" />
         </Sec>
 
         {/* 05 EDUCATION */}
@@ -811,17 +777,24 @@ export default function App() {
               <p>Through my specialization I became interested in how systems are built, secured, deployed and managed. More importantly, it taught me that knowledge becomes valuable when it is applied.</p>
             </Reveal>
           </div>
-          <Reveal className="quote">“Education gave me the foundation. Curiosity gave me the direction.”</Reveal>
+          <Split as="div" className="quote" text="“Education gave me the foundation. Curiosity gave me the direction.”" />
         </Sec>
 
-        {/* 06 PROJECTS: scroll-driven */}
-        <ProjectsStory />
+        {/* 06 PROJECTS */}
+        <Sec id="work" idx={6} label="Projects" tone="dark">
+          <div className="phd">
+            <Split text="Ideas deserve to exist." className="disp sm" />
+            <Reveal delay={80}><p className="lead">Every project starts with a question: what if something could be simpler, smarter or more useful? Concepts are marked as concepts.</p></Reveal>
+          </div>
+          <Projects />
+          <Split as="div" className="quote q2" text="“An idea becomes valuable when you give it the effort to exist.”" />
+        </Sec>
 
         {/* 06 SKILLS */}
         <Sec id="skills" idx={7} label="Skills" tone="warm">
           <Split text="The technology I work with." className="disp sm" />
           <SkillGrid />
-          <Reveal className="quote">“Tools change. The ability to learn never goes out of style.”</Reveal>
+          <Split as="div" className="quote" text="“Tools change. The ability to learn never goes out of style.”" />
         </Sec>
 
         {/* 07 BEYOND */}
@@ -832,7 +805,7 @@ export default function App() {
             {HUMAN.map(([t, r, ic, d], i) => <Reveal key={t} delay={i * 100} className="hc glow" onMouseMove={spot}><BeyondArt i={i} /><small>{r}</small><h3>{t}</h3><p>{d}</p></Reveal>)}
           </div>
           <Reveal><p className="lead">Technical skills help us build solutions; communication, empathy, ownership and collaboration help us build meaningful relationships.</p></Reveal>
-          <Reveal className="quote">“Build things that work. Build relationships that last.”</Reveal>
+          <Split as="div" className="quote" text="“Build things that work. Build relationships that last.”" />
         </Sec>
 
         {/* 08 LEARNING */}
@@ -843,7 +816,7 @@ export default function App() {
           <div className="egrid">
             {LEARN.map(([t, ic, d], i) => <Reveal key={t} delay={i * 90} className="ec glow" onMouseMove={spot}><LearnArt i={i} /><h3>{t}</h3><p>{d}</p></Reveal>)}
           </div>
-          <Reveal className="quote q2">“I don't need to know everything today. I just need to keep learning something every day.”</Reveal>
+          <Split as="div" className="quote q2" text="“I don't need to know everything today. I just need to keep learning something every day.”" />
         </Sec>
 
         {/* 09 CONTACT */}
@@ -862,7 +835,7 @@ export default function App() {
               ))}
             </Reveal>
           </div>
-          <Reveal className="quote">“The right conversation can become the beginning of something extraordinary.”</Reveal>
+          <Split as="div" className="quote" text="“The right conversation can become the beginning of something extraordinary.”" />
         </Sec>
       </main>
 
@@ -930,13 +903,13 @@ a{color:inherit;text-decoration:none}.app{overflow-x:clip}main{display:block}
 @keyframes kb{to{transform:scale(1.05)}}
 .hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(23,21,20,.5),transparent 32%)}
 .hero>*{z-index:2}.hero>.gl{z-index:1;opacity:.35}
-.tags{position:absolute;top:clamp(92px,13vh,128px);left:3vw;display:flex;gap:14px;align-items:center;font:500 11px var(--g);letter-spacing:.3em;text-transform:uppercase;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.35)}
-.tagline{position:absolute;left:3vw;top:clamp(170px,30vh,300px);max-width:320px;padding-left:16px;border-left:3px solid var(--or2);font:600 14px/1.5 var(--g);letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 14px rgba(0,0,0,.4)}.tagline span{display:block;margin-top:10px;font:400 14px/1.7 Inter;letter-spacing:0;text-transform:none}
-.hcopy{position:absolute;left:3vw;bottom:clamp(84px,13vh,120px)}.hcopy small{display:block;font:500 16px var(--g);margin-bottom:6px;text-shadow:0 1px 12px rgba(0,0,0,.35)}
-.hero h1{font:800 clamp(60px,min(13vw,21vh),230px)/.86 var(--hf);font-stretch:88%;letter-spacing:-.04em;color:#fff;text-shadow:0 8px 40px rgba(60,10,0,.35)}
+.tags{position:absolute;top:clamp(92px,13vh,128px);left:3vw;display:flex;gap:14px;align-items:center;font:500 11px var(--g);letter-spacing:.3em;text-transform:uppercase;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.35)}
+.tagline{position:absolute;left:3vw;top:clamp(170px,30vh,300px);max-width:320px;padding-left:16px;border-left:3px solid var(--or2);font:600 14px/1.5 var(--g);letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,.35)}.tagline span{display:block;margin-top:10px;font:400 14px/1.7 Inter;letter-spacing:0;text-transform:none}
+.hcopy{position:absolute;left:3vw;bottom:clamp(84px,13vh,120px)}.hcopy small{display:block;font:500 16px var(--g);margin-bottom:6px;text-shadow:0 1px 4px rgba(0,0,0,.35)}
+.hero h1{font:800 clamp(60px,min(13vw,21vh),230px)/.86 var(--hf);font-stretch:88%;letter-spacing:-.04em;color:#fff;text-shadow:0 2px 12px rgba(40,8,0,.25)}
 .hero h1>span{display:block}.ltr{display:inline-block;will-change:transform}.hero h1 .ltr{font-variation-settings:"wght" 760,"wdth" 88}.hero h1 i{display:inline-block;width:.13em;height:.13em;border-radius:50%;background:var(--or2);margin-left:.04em;box-shadow:0 0 24px var(--or2);animation:pulse 2.8s infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 .1em rgba(255,122,69,.28),0 0 24px var(--or2)}}
-.role{margin-top:clamp(12px,2.4vh,22px);font:600 13px var(--g);letter-spacing:.34em;text-transform:uppercase;text-shadow:0 1px 12px rgba(0,0,0,.4)}.sub{margin:6px 0 clamp(14px,2.6vh,24px);font-size:clamp(14px,1.6vh+.4vw,17px);color:rgba(255,255,255,.92);text-shadow:0 1px 12px rgba(0,0,0,.4)}
+.role{margin-top:clamp(12px,2.4vh,22px);font:600 13px var(--g);letter-spacing:.34em;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,.35)}.sub{margin:6px 0 clamp(14px,2.6vh,24px);font-size:clamp(14px,1.6vh+.4vw,17px);color:rgba(255,255,255,.92);text-shadow:0 1px 4px rgba(0,0,0,.35)}
 .ctas{display:flex;gap:12px;flex-wrap:wrap}
 .gcard{position:absolute;display:block;padding:12px;border-radius:26px;background:linear-gradient(135deg,rgba(255,255,255,.26),rgba(255,255,255,.07));backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border:1px solid rgba(255,255,255,.36);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 20px 50px rgba(40,8,0,.3);transition:transform 1s var(--spring)}
 .gcard:hover{transform:translateY(-5px)}.gcard strong{display:block;font:700 15px var(--g)}.gcard small{display:block;font-size:11px;opacity:.85;margin-top:2px}
@@ -949,7 +922,7 @@ a{color:inherit;text-decoration:none}.app{overflow-x:clip}main{display:block}
 .av{flex:none;width:60px;height:60px;border-radius:18px;background:var(--or) center 22%/260% no-repeat}.c2 .go{margin-left:auto}
 .c2 u{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--or2);margin-left:60px;box-shadow:0 0 10px var(--or2)}
 @keyframes fl{50%{translate:0 -8px}}
-.hfoot{position:absolute;left:3vw;right:3vw;bottom:max(24px,env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;font:500 11px var(--g);letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.85);text-shadow:0 1px 10px rgba(0,0,0,.4)}
+.hfoot{position:absolute;left:3vw;right:3vw;bottom:max(24px,env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;font:500 11px var(--g);letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.85);text-shadow:0 1px 4px rgba(0,0,0,.35)}
 .soc{display:flex;gap:10px}.soc a{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(10px);transition:transform 1s var(--spring),background .8s}.soc a:hover{background:var(--or);transform:translateY(-4px)}
 .a1,.a2,.a3,.a4,.a5{animation:in 1.5s var(--ease) both}.a1{animation-delay:.2s}.a2{animation-delay:.4s}.a3{animation-delay:.55s}.a4{animation-delay:.8s}.a5{animation-delay:1s}
 @keyframes in{from{opacity:0;transform:translateY(50px);filter:blur(10px)}}
@@ -1266,16 +1239,54 @@ a{color:inherit;text-decoration:none}.app{overflow-x:clip}main{display:block}
 .career .jhead{min-height:clamp(260px,46vh,420px)}
 .pin2{min-height:clamp(64px,10.5vh,104px)}
 
+/* hero name: same rise-up as every heading */
+.hn .hl{display:block;overflow:hidden;padding:0 .2em .1em 0;margin-bottom:-.1em}
+.hn .hl>span{display:inline-block;transform:translateY(115%);transition:transform .6s ease}
+.hn.in .hl>span{transform:none;transition:transform 1.5s var(--ease)}
+/* climb so far: completely static */
+.peak .climb{stroke-dashoffset:0!important;transition:none}
+.peak .star,.peak .mist,.peak .bird,.peak .wave{animation:none}
+.peak .sunc,.peak .snow,.peak .pflag{opacity:1;transition:none}.peak .snow{opacity:.92}
+.peak .r1,.peak .r2{transform:none;transition:none}
+.peak .pflag{left:90%}.pscene{height:clamp(170px,31vh,330px)}
+.pcols{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:clamp(8px,1.6vh,14px)}
+.pcol{padding:clamp(10px,1.6vh,16px);border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}
+.pcol small{font:600 10px var(--g);letter-spacing:.2em;text-transform:uppercase;color:var(--or2)}
+.pcol h3{font:400 clamp(15px,2.3vh,21px)/1.1 var(--d);text-transform:uppercase;margin:5px 0 8px}
+.pcol ul{list-style:none;padding:0;display:grid;gap:5px}.pcol li{position:relative;padding-left:14px;font-size:clamp(10.5px,1.35vh,12.5px);line-height:1.4;opacity:.9}.pcol li::before{content:"";position:absolute;left:0;top:.55em;width:7px;height:2px;background:var(--or2)}
+/* education: curiosity scene */
+.estar{fill:#fff;opacity:.85;animation:tw 4s ease-in-out infinite}
+.econ{fill:none;stroke:var(--or2);stroke-width:1.6;stroke-dasharray:1;stroke-dashoffset:1;stroke-linecap:round;transition:stroke-dashoffset 2.4s var(--ease) .3s}.edus.on .econ{stroke-dashoffset:0}
+.enode{fill:#fff;opacity:0;transition:opacity 1s}.edus.on .enode{opacity:1}.enode.big{fill:var(--or2);filter:drop-shadow(0 0 8px var(--or2))}
+.ebeam{opacity:0;transition:opacity 2s 1s}.edus.on .ebeam{opacity:1}
+.etel{opacity:0;transition:opacity 1.4s .4s}.edus.on .etel{opacity:1}
+@media(max-width:1000px){.pcols{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.pcols{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.hn .hl>span{transform:none}}
+
+/* calm text: nothing pulses or glows */
+.logo,.logo *{transition:none!important;animation:none!important;transform:none!important}
+.logo{font-size:16px}.logo .sg{display:inline}.logo .full{display:none}.logo i{box-shadow:none}
+.hero h1 i{animation:none;box-shadow:none}.live i,.dc i{animation:none;box-shadow:none}
+.dayone{filter:none}.idesc{animation:none}
+.hfoot>span{letter-spacing:.14em;line-height:1.6;max-width:min(520px,45vw);text-align:right}
+.pscn{aspect-ratio:4/2.7}
+.pinfo{min-height:clamp(150px,24vh,210px);margin-top:10px}
+.pinfo small{display:block;font:600 10px var(--g);letter-spacing:.18em;text-transform:uppercase;color:var(--or2)}
+.pinfo h3{font:400 clamp(24px,3.8vh,34px)/1.05 var(--d);text-transform:uppercase;margin:4px 0 6px}
+.pinfo p{font-size:clamp(12.5px,1.55vh,14px)!important;line-height:1.5!important;margin:0 0 6px!important;max-width:none!important}
+.pinfo .btn{margin-top:6px}
+
 /* responsive */
 @media(max-width:1100px){.dots{display:none}}
 @media(min-width:1001px){.sec{height:100vh;height:100svh;min-height:0}.wrap{will-change:transform}}
 @media(min-width:1001px) and (max-height:780px){.sechead{display:none}.sec{padding-top:80px}}
 @media(max-width:1000px){
 .nav{width:calc(100% - 28px);justify-content:space-between;gap:10px;padding:6px 6px 6px 18px}.links,.nav .btn{display:none}.burger{display:block}.drop{display:block}
-.logo .full{display:inline!important}.logo .sg{display:none!important}
+
 .two,.jhead,.phd,.hgrid{grid-template-columns:1fr}.egrid,.ids{grid-template-columns:1fr 1fr}.focus{grid-template-columns:1fr}
-.hero::before{background-position:62% top}.c1,.tagline,.hfoot>span{display:none}.c2{display:none}.tags{top:92px}.hcopy{bottom:96px}
-.sk{grid-template-columns:1fr 1fr}.skc,.skc.s3{grid-column:auto}.ident li button{font-size:clamp(40px,13vw,72px)}.edus{width:100%}.crane,.ctower,.cflight{opacity:.3}.pwrap{grid-template-columns:1fr}.pprev,.spinbadge,.cplane{display:none}.ppanel{grid-template-columns:1fr}.orbit{width:min(100%,360px)}.badgewrap{margin-top:14px}.pin2{padding-left:0;grid-template-columns:1fr}.skc.s4{grid-column:span 2}
+.hero::before{background-position:62% top}.c1,.tagline{display:none}.hfoot{flex-direction:column-reverse;align-items:flex-start;gap:12px}.hfoot>span{max-width:92%;text-align:left}.c2{display:none}.tags{top:92px}.hcopy{bottom:96px}
+.sk{grid-template-columns:1fr 1fr}.skc,.skc.s3{grid-column:auto}.ident li button{font-size:clamp(40px,13vw,72px)}.edus{width:100%}.crane,.ctower,.cflight{opacity:.3}.pwrap{grid-template-columns:1fr}.spinbadge,.cplane{display:none}.ppanel{grid-template-columns:1fr}.orbit{width:min(100%,360px)}.badgewrap{margin-top:14px}.pin2{padding-left:0;grid-template-columns:1fr}.skc.s4{grid-column:span 2}
 .tl{grid-template-columns:1fr 1fr;row-gap:26px}.tline{display:none}.tl{padding-top:0}.dot{position:static;display:block;margin-bottom:10px}
 .phead{grid-template-columns:34px 1fr 40px;gap:12px}.ptag,.pill{display:none}.pin2{grid-template-columns:44px 1fr}.pin2 .btn{grid-column:1/-1;justify-self:start}
 .clist a{grid-template-columns:44px 1fr 30px}.clist small{display:none}.sec{justify-content:flex-start}.pcards{grid-template-columns:1fr 1fr}.e-foot{grid-template-columns:1fr;text-align:center;justify-items:center}.e-foot .top{justify-self:center}.deco{display:none}}
