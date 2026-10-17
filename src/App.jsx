@@ -568,7 +568,7 @@ const ContactBg = () => (
     <div className="csun" data-par="0.05" />
     <svg className="cflight" viewBox="0 0 1200 300" preserveAspectRatio="none"><path id="fly2" className="dash" d="M60,260 C300,60 520,270 760,120 S1060,40 1190,24" /><path d="M-16,-9 L18,0 L-16,9 L-9,0Z" fill="#fff"><animateMotion dur="9s" repeatCount="indefinite" rotate="auto"><mpath href="#fly2" /></animateMotion></path></svg>
     <svg className="cmtn" viewBox="0 0 1200 260" preserveAspectRatio="none"><path d="M0,260 L0,170 L140,120 L260,170 L420,70 L540,140 L700,50 L860,140 L1000,90 L1120,150 L1200,120 L1200,260Z" fill="#171514" /><path d="M0,260 L0,210 L180,170 L330,215 L500,160 L680,214 L860,170 L1040,216 L1200,190 L1200,260Z" fill="#0b0908" /></svg>
-    <svg className="ctower" viewBox="0 0 80 150"><path d="M40,12 L10,146 M40,12 L70,146 M23,80H57M16,112H64M30,50H50" /><circle cx="40" cy="8" r="4" fill="#fff" stroke="none" /><circle className="sg" cx="40" cy="8" r="7" /><circle className="sg s2" cx="40" cy="8" r="7" /><circle className="sg s3" cx="40" cy="8" r="7" /></svg>
+    <svg className="ctower" viewBox="0 0 80 150"><path d="M40,12 L10,146 M40,12 L70,146 M23,80H57M16,112H64M30,50H50" /><circle cx="40" cy="8" r="4" fill="#fff" stroke="none" /><circle className="sigr" cx="40" cy="8" r="7" /><circle className="sigr s2" cx="40" cy="8" r="7" /><circle className="sigr s3" cx="40" cy="8" r="7" /></svg>
   </div>
 );
 
@@ -598,7 +598,7 @@ function LearnArt({ i }) {
   if (i === 0) return (<svg {...v}><rect className="bk k1" x="8" y="40" width="20" height="12" /><rect className="bk k2" x="32" y="40" width="20" height="12" /><rect className="bk k3" x="20" y="24" width="20" height="12" /></svg>);
   if (i === 1) return (<svg {...v}><g className="lp"><path d="M50 30a20 20 0 0 1-34 14M10 30a20 20 0 0 1 34-14M44 8v10H34M16 52V42h10" /></g></svg>);
   if (i === 2) return (<svg {...v}><g className="ct"><rect x="6" y="22" width="30" height="18" /><path d="M14 22v18M22 22v18M30 22v18" /></g><path d="M4 46H56" opacity=".5" /></svg>);
-  return (<svg {...v}><path className="sp" d="M30 8l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" /></svg>);
+  return (<svg {...v}><path className="spk" d="M30 8l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" /></svg>);
 }
 
 function HeroName({ go }) {
@@ -623,7 +623,7 @@ function Finale({ lit, day }) {
       </svg>
       <div className="e-main">
         <p className="est">A personal reminder · Est. 17.09.2026 · Day {day}</p>
-        <h2 aria-label="One day or day one."><span className="one">ONE DAY</span><span className="or">OR</span><span className="dayone">DAY ONE.</span></h2>
+        <h2 aria-label="One day or day one."><span className="ond">ONE DAY</span><span className="orw">OR</span><span className="dayone">DAY ONE.</span></h2>
         <p className="chose">I chose to begin. I'm still becoming.</p>
       </div>
       <div className="e-foot">
@@ -1038,10 +1038,10 @@ a{color:inherit;text-decoration:none}.app{overflow-x:clip}main{display:block}
 .e-main{position:relative;z-index:3;flex:1;display:grid;place-content:center;padding:clamp(70px,10vh,100px) 3vw 0}
 .est{font:500 12px var(--g);letter-spacing:.34em;text-transform:uppercase;opacity:.65;margin-bottom:clamp(8px,2.4vh,26px)}
 .end h2{display:grid;font:400 clamp(64px,min(20vw,24vh),300px)/.88 var(--d);letter-spacing:-.005em}.end h2 span{display:block;transition:all 1.8s var(--ease)}
-.one{color:rgba(245,241,233,.16);transform:translateY(30px)}.or{font:500 clamp(13px,2vh,24px) var(--g);letter-spacing:.7em;margin:.7em 0;opacity:0;color:var(--or2)}
+.ond{color:rgba(245,241,233,.16);transform:translateY(30px)}.orw{font:500 clamp(13px,2vh,24px) var(--g);letter-spacing:.7em;margin:.7em 0;opacity:0;color:var(--or2)}
 .dayone{background:linear-gradient(180deg,#fff 0,#ffd2bf 45%,var(--or2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.12;transform:scale(.94);filter:drop-shadow(0 8px 34px rgba(240,75,25,.55))}
-.end.lit .one{transform:none;color:rgba(245,241,233,.3);text-decoration:line-through;text-decoration-thickness:.03em;text-decoration-color:var(--or)}
-.end.lit .or{opacity:1}.end.lit .dayone{opacity:1;transform:none}
+.end.lit .ond{transform:none;color:rgba(245,241,233,.3);text-decoration:line-through;text-decoration-thickness:.03em;text-decoration-color:var(--or)}
+.end.lit .orw{opacity:1}.end.lit .dayone{opacity:1;transform:none}
 .chose{margin:clamp(12px,3vh,32px) auto 0;font:400 clamp(16px,2.2vh + .4vw,28px) var(--g);opacity:0;transition:opacity 1.8s 1s}.end.lit .chose{opacity:.95}
 .e-foot{position:relative;z-index:4;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px 16px;padding:0 3vw clamp(14px,2.6vh,26px);text-align:left}
 .sig strong{display:block;font:400 clamp(20px,3vh,28px) var(--d);letter-spacing:.04em}.sig small{font:600 10px var(--g);letter-spacing:.3em;text-transform:uppercase;opacity:.6}
@@ -1154,7 +1154,7 @@ a{color:inherit;text-decoration:none}.app{overflow-x:clip}main{display:block}
 .bk{fill:var(--or2);stroke:none;animation:dr 3.2s var(--ease) infinite}.bk.k2{animation-delay:.3s}.bk.k3{animation-delay:.6s}@keyframes dr{0%{transform:translateY(-26px);opacity:0}30%,80%{transform:none;opacity:1}100%{opacity:0}}
 .lp{transform-box:fill-box;transform-origin:center;animation:spin 8s linear infinite}
 .ct{animation:sl 3.4s ease-in-out infinite alternate}@keyframes sl{to{transform:translateX(18px)}}
-.sp{fill:var(--or2);stroke:none;transform-box:fill-box;transform-origin:center;animation:nd 2.4s ease-in-out infinite}
+.spk{fill:var(--or2);stroke:none;transform-box:fill-box;transform-origin:center;animation:nd 2.4s ease-in-out infinite}
 
 /* contact: paper plane route */
 .cl{position:relative}.cl>*{position:relative;z-index:1}.cl>.cplane{position:absolute;z-index:0;left:-6%;bottom:-18%;width:112%;height:78%;color:var(--or);opacity:.55;pointer-events:none}
@@ -1230,7 +1230,7 @@ a{color:inherit;text-decoration:none}.app{overflow-x:clip}main{display:block}
 .cmtn{position:absolute;left:0;right:0;bottom:0;width:100%;height:clamp(110px,26vh,240px)}
 .cflight{position:absolute;left:0;right:0;top:6%;width:100%;height:36%;opacity:.65}.cflight .dash{stroke:#fff}
 .ctower{position:absolute;left:5%;bottom:calc(clamp(110px,26vh,240px) - 40px);height:clamp(90px,18vh,150px);fill:none;stroke:#fff;stroke-width:2;overflow:visible}
-.sg{fill:none;stroke:#fff;transform-box:fill-box;transform-origin:center;opacity:0;animation:sgr 3.6s ease-out infinite}.sg.s2{animation-delay:1.2s}.sg.s3{animation-delay:2.4s}@keyframes sgr{0%{transform:scale(.4);opacity:.9}100%{transform:scale(3.6);opacity:0}}
+.sigr{fill:none;stroke:#fff;transform-box:fill-box;transform-origin:center;opacity:0;animation:sgr 3.6s ease-out infinite}.sigr.s2{animation-delay:1.2s}.sigr.s3{animation-delay:2.4s}@keyframes sgr{0%{transform:scale(.4);opacity:.9}100%{transform:scale(3.6);opacity:0}}
 .fire .clist{border-top-color:rgba(255,255,255,.35)}.fire .clist a{border-bottom-color:rgba(255,255,255,.3);color:#fff}.fire .clist a:hover{color:var(--char)}
 
 /* stable heights for self-updating content */
