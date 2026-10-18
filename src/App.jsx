@@ -285,7 +285,16 @@ const curve = (pts) => {
   }
   return d;
 };
-const CLIMB = curve(PTS);
+const SWITCH = (() => {
+  const out = [[0, 492], ...PTS.slice(0, 1)];
+  for (let i = 0; i < PTS.length - 1; i++) {
+    const [x1, y1] = PTS[i], [x2, y2] = PTS[i + 1], dx = x2 - x1, dy = y2 - y1;
+    [[0.24, 15], [0.5, -13], [0.76, 12]].forEach(([t, o]) => out.push([x1 + dx * t, y1 + dy * t + o * (i % 2 ? -1 : 1)]));
+    out.push(PTS[i + 1]);
+  }
+  return out;
+})();
+const CLIMB = curve(SWITCH.slice(1));
 const PEAKS = [[360, 340], [600, 260], [840, 150], [1080, 36]];
 const PINES = Array.from({ length: 22 }, (_, i) => [i * 56 + ((i * 37) % 30), 478 + ((i * 13) % 22)]);
 const STARS = [[80, 60], [220, 30], [330, 90], [520, 40], [640, 110], [900, 30], [1120, 130], [1170, 60], [40, 160], [760, 60]];
@@ -371,42 +380,75 @@ function useFit(oRef, iRef) {
 
 /* ---- Climb so far: self-playing story, no hover ---- */
 function Peak() {
+  const sparks = [[150, 70], [420, 40], [700, 80], [950, 30], [1150, 120]];
+  const shade = [[360, 340, 480, 400], [600, 260, 720, 330], [840, 150, 960, 240], [1080, 36, 1200, 190]];
   return (
     <div className="peak on">
       <div className="pscene">
         <svg viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
           <defs>
-            <linearGradient id="pk1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F04B19" /><stop offset=".55" stopColor="#5a2314" /><stop offset="1" stopColor="#1d1512" /></linearGradient>
-            <linearGradient id="pk2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2c211d" /><stop offset="1" stopColor="#110d0b" /></linearGradient>
-            <linearGradient id="pkT" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#F5F1E9" /><stop offset="1" stopColor="#FF7A45" /></linearGradient>
-            <linearGradient id="pkA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FF7A45" stopOpacity="0" /><stop offset="1" stopColor="#FF7A45" stopOpacity=".28" /></linearGradient>
-            <radialGradient id="pkS"><stop offset="0" stopColor="#FF7A45" stopOpacity=".9" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></radialGradient>
+            <linearGradient id="pkSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#0d0907" /><stop offset=".55" stopColor="#24130d" /><stop offset="1" stopColor="#6b2a14" /></linearGradient>
+            <linearGradient id="pk1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F04B19" /><stop offset=".5" stopColor="#6a2615" /><stop offset="1" stopColor="#1d1512" /></linearGradient>
+            <linearGradient id="pk2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#35241d" /><stop offset="1" stopColor="#110d0b" /></linearGradient>
+            <linearGradient id="pkT" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#F5F1E9" /><stop offset="1" stopColor="#FFB48A" /></linearGradient>
+            <linearGradient id="pkSh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#000" stopOpacity=".3" /><stop offset="1" stopColor="#000" stopOpacity="0" /></linearGradient>
+            <linearGradient id="pkR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FFD2B0" stopOpacity=".1" /><stop offset="1" stopColor="#FFD2B0" stopOpacity="0" /></linearGradient>
+            <radialGradient id="pkS"><stop offset="0" stopColor="#FF7A45" stopOpacity=".95" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></radialGradient>
             <filter id="pkB"><feGaussianBlur stdDeviation="12" /></filter>
+            <pattern id="pkH" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0,0 V7" stroke="#000" strokeOpacity=".24" strokeWidth="1.2" /></pattern>
+            <linearGradient id="pkAu" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#FF7A45" stopOpacity="0" /><stop offset=".5" stopColor="#FF5A2A" stopOpacity=".3" /><stop offset="1" stopColor="#B3260A" stopOpacity="0" /></linearGradient>
+            <radialGradient id="pkV" cx=".5" cy=".5" r=".75"><stop offset=".6" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".42" /></radialGradient>
           </defs>
-          <rect width="1200" height="330" fill="url(#pkA)" />
-          <circle className="sunc" cx="1080" cy="70" r="230" fill="url(#pkS)" />
+          <rect width="1200" height="520" fill="url(#pkSky)" />
+          <path d="M-50,150 C200,60 420,180 640,90 S980,40 1250,110 L1250,200 C980,120 760,200 560,150 S160,240 -50,230Z" fill="url(#pkAu)" filter="url(#pkB)" />
+          {["M1080,70 L-120,330 L-120,380Z", "M1080,70 L180,520 L300,520Z", "M1080,70 L560,520 L680,520Z"].map((d, i) => <path key={i} d={d} fill="url(#pkR)" />)}
+          <circle cx="1080" cy="70" r="270" fill="url(#pkS)" />
+          <circle cx="1080" cy="70" r="112" fill="none" stroke="#fff" strokeOpacity=".08" /><circle cx="1080" cy="70" r="74" fill="none" stroke="#fff" strokeOpacity=".14" />
+          <circle cx="1080" cy="70" r="30" fill="#FFE9D2" />
           {STARS.map(([x, y], i) => <circle key={i} className="star" cx={x} cy={y} r="1.8" />)}
-          <path className="far" d="M0,520 L0,360 L170,310 L380,380 L560,290 L760,360 L950,250 L1200,330 L1200,520Z" />
+          {sparks.map(([x, y], i) => <path key={i} d={`M${x},${y - 7} L${x + 1.6},${y - 1.6} L${x + 7},${y} L${x + 1.6},${y + 1.6} L${x},${y + 7} L${x - 1.6},${y + 1.6} L${x - 7},${y} L${x - 1.6},${y - 1.6}Z`} fill="#fff" opacity=".85" />)}
+          <path d="M0,520 L0,360 L170,310 L380,380 L560,290 L760,360 L950,250 L1200,330 L1200,520Z" fill="#7a331b" opacity=".5" />
+          {[[170, 310], [560, 290], [950, 250]].map(([x, y], i) => <path key={i} d={`M${x - 22},${y + 18} L${x - 8},${y + 9} L${x},${y + 19} L${x + 9},${y + 9} L${x + 22},${y + 18} L${x},${y}Z`} fill="#F2D8CC" opacity=".5" />)}
+          <ellipse cx="300" cy="240" rx="130" ry="14" fill="#fff" opacity=".05" filter="url(#pkB)" /><ellipse cx="760" cy="200" rx="160" ry="16" fill="#fff" opacity=".05" filter="url(#pkB)" />
           <ellipse className="mist" cx="260" cy="400" rx="280" ry="30" />
-          <path className="r1" d="M0,520 L0,420 L120,380 L240,430 L360,340 L480,400 L600,260 L720,330 L840,150 L960,240 L1080,36 L1200,190 L1200,520Z" fill="url(#pk1)" />
-          {PEAKS.map(([x, y], i) => <path key={i} className="snow" d={`M${x - 34},${y + 30} L${x - 12},${y + 18} L${x},${y + 32} L${x + 14},${y + 18} L${x + 34},${y + 30} L${x},${y}Z`} />)}
+          <path d="M0,520 L0,420 L120,380 L240,430 L360,340 L480,400 L600,260 L720,330 L840,150 L960,240 L1080,36 L1200,190 L1200,520Z" fill="url(#pk1)" />
+          {shade.map(([x, y, xr, yr], i) => <path key={i} d={`M${x},${y} L${xr},${yr} L${xr},520 L${x},520Z`} fill="url(#pkSh)" />)}
+          {shade.map(([x, y, xr, yr], i) => <path key={"h" + i} d={`M${x},${y} L${xr},${yr} L${xr},520 L${x},520Z`} fill="url(#pkH)" opacity=".5" />)}
+          {PEAKS.map(([x, y], i) => (
+            <g key={i}>
+              <path d={`M${x - 46},${y + 42} L${x - 30},${y + 30} L${x - 18},${y + 40} L${x - 6},${y + 26} L${x},${y + 36} L${x},${y}Z`} fill="#FFF1E6" opacity=".96" />
+              <path d={`M${x},${y} L${x},${y + 36} L${x + 8},${y + 26} L${x + 20},${y + 40} L${x + 32},${y + 28} L${x + 46},${y + 42}Z`} fill="#D6B2A3" opacity=".96" />
+            </g>
+          ))}
           <ellipse className="mist" cx="900" cy="330" rx="300" ry="26" />
-          <path className="r2" d="M0,520 L0,490 L150,450 L290,492 L440,440 L600,486 L760,400 L900,462 L1040,380 L1200,440 L1200,520Z" fill="url(#pk2)" />
+          <path d="M0,520 L0,490 L150,450 L290,492 L440,440 L600,486 L760,400 L900,462 L1040,380 L1200,440 L1200,520Z" fill="url(#pk2)" />
           {PINES.map(([x, y], i) => <path key={i} className="pine" d={`M${x},${y} l-10,26 h20z M${x},${y + 12} l-13,26 h26z`} />)}
+          {[30, 84, 1112, 1166].map((x, i) => <path key={i} d={`M${x},${400 + (i % 2) * 18} l-20,56 h40z M${x},${424 + (i % 2) * 18} l-27,56 h54z M${x},${448 + (i % 2) * 18} l-34,62 h68z`} fill="#050403" />)}
           <path d="M188,478 l22,-34 l22,34z" fill="#F5F1E9" opacity=".92" /><path d="M204,478 l6,-14 l6,14z" fill="#3a2a24" />
+          <path d={CLIMB} fill="none" stroke="#FF7A45" strokeWidth="11" strokeLinecap="round" opacity=".22" filter="url(#pkB)" />
           <path className="climb" pathLength="1" d={CLIMB} />
+          <path d={CLIMB} fill="none" stroke="#2a1510" strokeWidth="1.2" strokeDasharray="3 9" strokeLinecap="round" opacity=".55" />
+          <rect width="1200" height="520" fill="url(#pkV)" />
         </svg>
         {PTS.map(([x, y], i) => (
-          <span key={i} className="pn2 lit" style={{ left: `${x / 12}%`, top: `${y / 5.2}%` }}>
-            <Ic n={MILES[i][1]} s={16} /><span className={`plab ${i === 0 ? "up" : ""}`}>{MILES[i][0]}</span>
+          <span key={i} className={`pn2 lit ${i === 4 ? "goal" : ""}`} style={{ left: `${x / 12}%`, top: `${y / 5.2}%` }}>
+            <Ic n={MILES[i][1]} s={16} /><span className={`plab ${i === 0 ? "up" : ""}`}>{String(i + 1).padStart(2, "0")} · {MILES[i][0]}</span>
+            {i === 3 && (
+              <>
+                <span className="here">You are here</span>
+                <svg className="climber" viewBox="0 0 26 40" aria-hidden="true"><g fill="#0b0908" stroke="#0b0908"><circle cx="15" cy="6" r="4.2" stroke="none" /><path d="M12,11 L19,11 L18,24 L11,24Z" stroke="none" /><path d="M11,12 L6,14 L6,22 L11,22Z" stroke="none" /><path d="M12,24 L10,36 M17,24 L20,36" strokeWidth="3.4" strokeLinecap="round" fill="none" /><path d="M19,14 L24,36" strokeWidth="1.4" fill="none" /></g></svg>
+              </>
+            )}
           </span>
         ))}
         <svg className="pflag" viewBox="0 0 40 50" aria-hidden="true"><path d="M6 4v44" stroke="#fff" strokeWidth="3" strokeLinecap="round" /><path d="M8 6H36L29 14L36 22H8Z" fill="#F04B19" /></svg>
+        <span className="pbase">Base camp</span>
       </div>
       <div className="pcols">
         {MILES.map(([t, ic, sub, bullets], i) => (
           <Reveal key={t} delay={i * 80} className="pcol">
-            <small>0{i + 1} · {t}</small><h3>{sub}</h3>
+            <div className="pch"><span className="pi"><Ic n={ic} s={14} /></span><small>0{i + 1} · {t}</small></div>
+            <h3>{sub}</h3>
             <ul>{bullets.map((b) => <li key={b}>{b}</li>)}</ul>
           </Reveal>
         ))}
@@ -484,28 +526,44 @@ function Career({ day }) {
 /* ---- Education: cinematic scene ---- */
 function EduScene() {
   const [ref, on] = useInView(0.3);
-  const pts = [[150, 60], [165, 40], [190, 32], [215, 38], [232, 55], [232, 78], [215, 98], [200, 112], [200, 132]];
-  const stars = [[40, 40], [84, 22], [300, 36], [350, 64], [372, 24], [60, 96], [330, 120], [26, 150], [280, 86], [120, 28], [250, 18], [380, 110]];
+  const q = [[150, 60], [165, 40], [190, 32], [215, 38], [232, 55], [232, 78], [215, 98], [200, 112], [200, 132]];
+  const st = [[28, 34, 1.6], [62, 70, 1.2], [96, 26, 1.4], [118, 98, 1], [24, 128, 1.3], [72, 150, 1], [250, 22, 1.5], [270, 70, 1.2], [300, 96, 1.4], [326, 30, 1.2], [372, 88, 1.6], [352, 128, 1], [386, 40, 1.1], [236, 140, 1.2], [310, 150, 1], [48, 52, 1], [180, 14, 1.3], [110, 60, 1.1], [290, 50, 1]];
   return (
     <div ref={ref} className={`edus ${on ? "on" : ""}`}>
       <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <defs>
           <radialGradient id="eg"><stop offset="0" stopColor="#FF7A45" stopOpacity=".5" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></radialGradient>
-          <linearGradient id="ebm" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#FF7A45" stopOpacity=".4" /><stop offset="1" stopColor="#FF7A45" stopOpacity="0" /></linearGradient>
+          <linearGradient id="ebm" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#FF9A6A" stopOpacity=".5" /><stop offset="1" stopColor="#FF9A6A" stopOpacity="0" /></linearGradient>
+          <linearGradient id="esh" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#fff" stopOpacity="0" /><stop offset="1" stopColor="#fff" /></linearGradient>
+          <filter id="eb"><feGaussianBlur stdDeviation="9" /></filter>
+          <radialGradient id="evg" cx=".5" cy=".5" r=".75"><stop offset=".6" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".5" /></radialGradient>
         </defs>
-        <circle className="esun" cx="205" cy="92" r="120" fill="url(#eg)" />
-        {stars.map(([x, y], i) => <circle key={i} className="estar" cx={x} cy={y} r="1.5" style={{ animationDelay: `${i * 0.5}s` }} />)}
-        <path className="ebeam" d="M114,170 L190,106 L212,128 L122,184Z" fill="url(#ebm)" />
-        <path className="econ" pathLength="1" d={"M" + pts.map((q) => q.join(",")).join(" L")} />
-        {pts.map(([x, y], i) => <circle key={i} className="enode" cx={x} cy={y} r="4" style={{ transitionDelay: `${0.4 + i * 0.18}s` }} />)}
-        <circle className="enode big" cx="200" cy="160" r="6" style={{ transitionDelay: "2.2s" }} />
+        <path d="M-20,236 L140,120 L300,-10 L430,-10 L430,70 L270,180 L110,290Z" fill="#fff" opacity=".07" filter="url(#eb)" />
+        <circle className="esun" cx="205" cy="92" r="125" fill="url(#eg)" />
+        {st.map(([x, y, r], i) => <circle key={i} className="estar" cx={x} cy={y} r={r} style={{ animationDelay: `${i * 0.6}s` }} />)}
+        {[[60, 40], [330, 110], [150, 14]].map(([x, y], i) => <path key={i} d={`M${x},${y - 6} L${x + 1.4},${y - 1.4} L${x + 6},${y} L${x + 1.4},${y + 1.4} L${x},${y + 6} L${x - 1.4},${y + 1.4} L${x - 6},${y} L${x - 1.4},${y - 1.4}Z`} fill="#fff" opacity=".9" />)}
+        {[["?", 58, 62, 24], ["?", 330, 150, 16], ["!", 368, 76, 14], ["{ }", 34, 166, 12], ["∞", 292, 124, 14]].map(([t, x, y, f], i) => <text key={i} className="eglyph" x={x} y={y} fontSize={f}>{t}</text>)}
+        <path d="M346,36 a15,15 0 1,0 0,30 a11,11 0 1,1 0,-30z" fill="#F5F1E9" opacity=".95" />
+        <path d="M296,34 L338,16" stroke="url(#esh)" strokeWidth="1.6" strokeLinecap="round" />
+        <path className="ebeam" d="M177,140 L194,104 L216,134Z" fill="url(#ebm)" />
+        <path className="econ" pathLength="1" d={"M" + q.map((c) => c.join(",")).join(" L")} />
+        {q.map(([x, y], i) => (
+          <g key={i}><circle className="ehalo" cx={x} cy={y} r="10" style={{ transitionDelay: `${0.4 + i * 0.18}s` }} /><circle className="enode" cx={x} cy={y} r="4" style={{ transitionDelay: `${0.4 + i * 0.18}s` }} /></g>
+        ))}
+        <circle className="ehalo" cx="200" cy="160" r="16" style={{ transitionDelay: "2.2s" }} />
+        <circle className="enode big" cx="200" cy="160" r="7" style={{ transitionDelay: "2.2s" }} />
+        <ellipse className="ering" cx="200" cy="160" rx="16" ry="4.5" transform="rotate(-18 200 160)" />
         <path className="eh1" d="M0,300 L0,214 Q100,176 200,208 T400,192 L400,300Z" fill="#3a1d12" />
-        <path className="eh2" d="M0,300 L0,250 Q120,220 220,244 T400,232 L400,300Z" fill="#130f0d" />
         <g className="etel">
-          <path d="M82,198 L64,232 M82,198 L100,232 M82,198 L82,238" stroke="#cdbfb0" strokeWidth="3" strokeLinecap="round" fill="none" />
-          <g transform="rotate(-35 82 196)"><rect x="52" y="192" width="10" height="8" rx="2" fill="#8c7f73" /><rect x="58" y="190" width="66" height="12" rx="3" fill="#cdbfb0" /><rect x="110" y="188" width="10" height="16" rx="2" fill="#FF7A45" /></g>
-          <circle cx="82" cy="196" r="5" fill="#FF7A45" />
+          <g fill="#0b0908" stroke="#0b0908"><circle cx="103" cy="162" r="6.5" stroke="none" /><path d="M98,170 L109,169 L106,187 L95,188Z" stroke="none" /><path d="M92,171 L86,174 L86,185 L94,186Z" stroke="none" /><path d="M96,188 L93,203 M103,187 L106,203" strokeWidth="4.2" strokeLinecap="round" fill="none" /><path d="M107,173 L119,168" strokeWidth="3.4" strokeLinecap="round" fill="none" /></g>
+          <path d="M132,168 L114,198 M132,168 L150,198 M132,168 L132,203" stroke="#cdbfb0" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <g transform="rotate(-30 132 166)"><rect x="94" y="163" width="8" height="6" rx="2" fill="#8c7f73" /><rect x="100" y="160" width="76" height="12" rx="3" fill="#cdbfb0" /><rect x="128" y="153" width="26" height="5" rx="2" fill="#a89a8d" /><rect x="170" y="158" width="14" height="16" rx="2" fill="#FF7A45" /></g>
+          <circle cx="132" cy="166" r="5" fill="#FF7A45" />
+          <circle cx="177" cy="140" r="11" fill="url(#eg)" /><path d="M177,130 L178.4,138.6 L187,140 L178.4,141.4 L177,150 L175.6,141.4 L167,140 L175.6,138.6Z" fill="#fff" opacity=".9" />
         </g>
+        <path className="eh2" d="M0,300 L0,250 Q120,220 220,244 T400,232 L400,300Z" fill="#130f0d" />
+        {[[60, 216], [150, 226], [262, 218], [334, 230], [214, 240], [24, 232]].map(([x, y], i) => <circle key={i} className="efly" cx={x} cy={y} r="1.7" style={{ animationDelay: `${i * 0.9}s` }} />)}
+        <rect width="400" height="300" fill="url(#evg)" />
       </svg>
       <span className="echip" style={{ left: "80%", top: "58%" }}>Cyber Security</span>
       <span className="echip" style={{ left: "80%", top: "71%" }}>Cloud Architecture</span>
@@ -1276,6 +1334,24 @@ a{color:inherit;text-decoration:none}.app{overflow-x:clip}main{display:block}
 .pinfo h3{font:400 clamp(24px,3.8vh,34px)/1.05 var(--d);text-transform:uppercase;margin:4px 0 6px}
 .pinfo p{font-size:clamp(12.5px,1.55vh,14px)!important;line-height:1.5!important;margin:0 0 6px!important;max-width:none!important}
 .pinfo .btn{margin-top:6px}
+
+/* graphics upgrade */
+.pcol{border-top:2px solid var(--or2)}
+.pcol .pch{display:flex;align-items:center;gap:8px}
+.pcol .pi{flex:none;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,var(--or2),var(--red))}
+.pn2.goal{width:42px;height:42px;box-shadow:0 0 0 7px rgba(255,122,69,.28)}
+.pbase{position:absolute;left:15%;bottom:3%;font:600 10px var(--g);letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.edus{width:min(100%,calc(clamp(240px,44vh,460px) * 1.3333))}
+.ehalo{fill:#FF7A45;opacity:0;transition:opacity 1s}.edus.on .ehalo{opacity:.22}
+.ering{fill:none;stroke:#ffd2bf;stroke-width:1.4;opacity:0;transition:opacity 1s 2.4s}.edus.on .ering{opacity:.9}
+.estar{animation-duration:7s}
+
+/* graphics polish */
+.pn2 .here{position:absolute;bottom:calc(100% + 12px);left:50%;translate:-50% 0;padding:5px 12px;border-radius:99px;font:700 10px var(--g);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;background:var(--warm);color:var(--char);pointer-events:none}
+.pn2 .here::after{content:"";position:absolute;left:50%;top:100%;translate:-50% 0;border:5px solid transparent;border-top-color:var(--warm)}
+.climber{position:absolute;right:calc(100% + 2px);bottom:3px;width:24px;height:37px;pointer-events:none}
+.eglyph{fill:#fff;opacity:0;font-family:Anton,Impact,sans-serif;transition:opacity 1.4s 1.4s}.edus.on .eglyph{opacity:.28}
+.efly{fill:#FFB48A;opacity:.9;animation:tw 5s ease-in-out infinite}
 
 /* responsive */
 @media(max-width:1100px){.dots{display:none}}
